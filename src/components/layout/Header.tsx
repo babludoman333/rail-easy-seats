@@ -1,15 +1,18 @@
-import { Train, User, Menu } from "lucide-react";
+import { Train, User, Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
+  const { user, signOut } = useAuth();
+
   return (
     <header className="bg-card border-b border-border shadow-sm">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="p-2 bg-gradient-to-r from-primary to-primary-hover rounded-lg">
+            <div className="p-2 bg-gradient-to-r from-primary to-primary/80 rounded-lg">
               <Train className="h-6 w-6 text-primary-foreground" />
             </div>
             <span className="text-2xl font-bold text-primary">RailEase</span>
@@ -30,13 +33,24 @@ const Header = () => {
 
           {/* User Actions */}
           <div className="flex items-center space-x-3">
-            <Link to="/login">
-              <Button variant="outline" size="sm" className="hidden md:flex">
-                <User className="h-4 w-4 mr-2" />
-                Login
-              </Button>
-            </Link>
-            <Button size="sm">Sign Up</Button>
+            {user ? (
+              <div className="flex items-center space-x-2">
+                <span className="hidden sm:inline text-sm text-muted-foreground">
+                  Welcome, {user.user_metadata?.full_name || user.email}
+                </span>
+                <Button variant="outline" onClick={signOut} size="sm" className="flex items-center space-x-2">
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden sm:inline">Logout</span>
+                </Button>
+              </div>
+            ) : (
+              <Link to="/auth">
+                <Button variant="outline" size="sm" className="hidden md:flex">
+                  <User className="h-4 w-4 mr-2" />
+                  Login
+                </Button>
+              </Link>
+            )}
             
             {/* Mobile menu button */}
             <Button variant="ghost" size="sm" className="md:hidden">

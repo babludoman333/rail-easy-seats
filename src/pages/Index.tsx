@@ -1,39 +1,38 @@
+import { useState, useEffect } from "react";
 import Header from "@/components/layout/Header";
 import TrainSearchForm from "@/components/search/TrainSearchForm";
-import SeatMap from "@/components/booking/SeatMap";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Users } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Station {
+  id: string;
+  name: string;
+  code: string;
+  city: string;
+  state: string;
+}
+
+interface Train {
+  id: string;
+  number: string;
+  name: string;
+  from_station_id: string;
+  to_station_id: string;
+  departure_time: string;
+  arrival_time: string;
+  duration: string;
+  price: number;
+  total_seats: number;
+  from_station?: Station;
+  to_station?: Station;
+}
 
 const Index = () => {
-  // Mock train search results
-  const mockTrains = [
-    {
-      id: 1,
-      number: "12345",
-      name: "Rajdhani Express",
-      from: "New Delhi",
-      to: "Mumbai Central", 
-      departure: "16:55",
-      arrival: "08:35",
-      duration: "15h 40m",
-      price: 2499,
-      available: 23
-    },
-    {
-      id: 2,
-      number: "12951",
-      name: "Mumbai Rajdhani",
-      from: "New Delhi",
-      to: "Mumbai Central",
-      departure: "17:20",
-      arrival: "09:05", 
-      duration: "15h 45m",
-      price: 2699,
-      available: 8
-    }
-  ];
+  const [searchResults, setSearchResults] = useState<Train[]>([]);
+  const [isSearched, setIsSearched] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -54,69 +53,63 @@ const Index = () => {
       {/* Search Form */}
       <section className="py-12 px-4 -mt-8 relative z-10">
         <div className="container mx-auto">
-          <TrainSearchForm />
+          <TrainSearchForm onSearch={setSearchResults} onSearchStart={() => setIsSearched(true)} />
         </div>
       </section>
 
       {/* Search Results */}
-      <section className="py-8 px-4">
-        <div className="container mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Available Trains</h2>
-          <div className="space-y-4">
-            {mockTrains.map((train) => (
-              <Card key={train.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold">{train.name}</h3>
-                        <Badge variant="outline">{train.number}</Badge>
+      {isSearched && (
+        <section className="py-8 px-4">
+          <div className="container mx-auto">
+            <h2 className="text-2xl font-bold mb-6">
+              {searchResults.length > 0 ? "Available Trains" : "No trains found"}
+            </h2>
+            <div className="space-y-4">
+              {searchResults.map((train) => (
+                <Card key={train.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-lg font-semibold">{train.name}</h3>
+                          <Badge variant="outline">{train.number}</Badge>
+                        </div>
+                        
+                        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-4 w-4" />
+                            {train.from_station?.name} → {train.to_station?.name}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-4 w-4" />
+                            {train.departure_time} - {train.arrival_time}
+                          </div>
+                          <div>Duration: {train.duration}</div>
+                        </div>
                       </div>
                       
-                      <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          {train.from} → {train.to}
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <div className="text-2xl font-bold">₹{train.price.toLocaleString()}</div>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <Users className="h-4 w-4" />
+                            {train.total_seats} seats
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          {train.departure} - {train.arrival}
-                        </div>
-                        <div>Duration: {train.duration}</div>
+                        <Link to="/booking" state={{ train }}>
+                          <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+                            Book Now
+                          </button>
+                        </Link>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <div className="text-2xl font-bold">₹{train.price.toLocaleString()}</div>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <Users className="h-4 w-4" />
-                        {train.available} seats
-                      </div>
-                    </div>
-                    <Link to="/booking">
-                      <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover transition-colors">
-                        Book Now
-                      </button>
-                    </Link>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Seat Selection Demo */}
-      <section className="py-12 px-4 bg-muted/30">
-        <div className="container mx-auto">
-          <h2 className="text-2xl font-bold mb-6 text-center">Interactive Seat Selection</h2>
-          <div className="max-w-4xl mx-auto">
-            <SeatMap />
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 };

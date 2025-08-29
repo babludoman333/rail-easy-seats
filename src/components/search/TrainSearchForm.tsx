@@ -1,18 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CalendarDays, MapPin, ArrowRightLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-const TrainSearchForm = () => {
+interface Station {
+  id: string;
+  name: string;
+  code: string;
+  city: string;
+  state: string;
+}
+
+interface Train {
+  id: string;
+  number: string;
+  name: string;
+  from_station_id: string;
+  to_station_id: string;
+  departure_time: string;
+  arrival_time: string;
+  duration: string;
+  price: number;
+  total_seats: number;
+  from_station?: Station;
+  to_station?: Station;
+}
+
+interface TrainSearchFormProps {
+  onSearch: (trains: Train[]) => void;
+  onSearchStart: () => void;
+}
+
+const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
   const [searchData, setSearchData] = useState({
     from: "",
     to: "",
     date: "",
     class: ""
   });
+  const [stations, setStations] = useState<Station[]>([]);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchStations();
+  }, []);
+
+  const fetchStations = async () => {
+    const { data, error } = await supabase
+      .from('stations')
+      .select('*')
+      .order('name');
+    
+    if (error) {
+      console.error('Error fetching stations:', error);
+      return;
+    }
+    
+    setStations(data || []);
+  };
 
   const handleSwapStations = () => {
     setSearchData(prev => ({
@@ -22,9 +72,39 @@ const TrainSearchForm = () => {
     }));
   };
 
-  const handleSearch = () => {
-    console.log("Searching trains:", searchData);
-    // TODO: Implement search functionality
+  const handleSearch = async () => {
+    if (!searchData.from || !searchData.to || !searchData.date) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    onSearchStart();
+    
+    const { data, error } = await supabase
+      .from('trains')
+      .select(`
+        *,
+        from_station:stations!trains_from_station_id_fkey(*),
+        to_station:stations!trains_to_station_id_fkey(*)
+      `)
+      .eq('from_station_id', searchData.from)
+      .eq('to_station_id', searchData.to);
+    
+    if (error) {
+      console.error('Error searching trains:', error);
+      toast({
+        title: "Search Error",
+        description: "Failed to search for trains",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    onSearch(data || []);
   };
 
   return (
@@ -38,16 +118,18 @@ const TrainSearchForm = () => {
           {/* From Station */}
           <div className="space-y-2">
             <Label htmlFor="from" className="text-sm font-medium">From</Label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="from"
-                placeholder="Source Station"
-                className="pl-10"
-                value={searchData.from}
-                onChange={(e) => setSearchData(prev => ({ ...prev, from: e.target.value }))}
-              />
-            </div>
+            <Select value={searchData.from} onValueChange={(value) => setSearchData(prev => ({ ...prev, from: value }))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select source station" />
+              </SelectTrigger>
+              <SelectContent>
+                {stations.map((station) => (
+                  <SelectItem key={station.id} value={station.id}>
+                    {station.name} ({station.code})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Swap Button */}
@@ -65,16 +147,18 @@ const TrainSearchForm = () => {
           {/* To Station */}
           <div className="space-y-2">
             <Label htmlFor="to" className="text-sm font-medium">To</Label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="to"
-                placeholder="Destination Station"
-                className="pl-10"
-                value={searchData.to}
-                onChange={(e) => setSearchData(prev => ({ ...prev, to: e.target.value }))}
-              />
-            </div>
+            <Select value={searchData.to} onValueChange={(value) => setSearchData(prev => ({ ...prev, to: value }))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select destination station" />
+              </SelectTrigger>
+              <SelectContent>
+                {stations.filter(station => station.id !== searchData.from).map((station) => (
+                  <SelectItem key={station.id} value={station.id}>
+                    {station.name} ({station.code})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Date */}
