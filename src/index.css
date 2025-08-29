@@ -8,33 +8,54 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Railway-themed color system */
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Railway blue primary */
+    --primary: 214 85% 35%;
+    --primary-foreground: 0 0% 98%;
+    --primary-hover: 214 85% 30%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Subtle secondary */
+    --secondary: 214 20% 95%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 214 20% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 214 25% 90%;
+    --accent-foreground: 222 47% 11%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Seat status colors */
+    --available: 142 76% 36%;
+    --available-foreground: 0 0% 98%;
+    --booked: 0 84% 60%;
+    --booked-foreground: 0 0% 98%;
+    --selected: 43 96% 56%;
+    --selected-foreground: 222 47% 11%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 214 20% 88%;
+    --input: 214 20% 92%;
+    --ring: 214 85% 35%;
+
+    /* Railway gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(214 85% 35%), hsl(214 85% 45%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(214 20% 98%));
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-card: 0 4px 6px -1px hsl(214 20% 20% / 0.1), 0 2px 4px -1px hsl(214 20% 20% / 0.06);
+    --shadow-hover: 0 10px 15px -3px hsl(214 20% 20% / 0.1), 0 4px 6px -2px hsl(214 20% 20% / 0.05);
 
     --radius: 0.5rem;
 
