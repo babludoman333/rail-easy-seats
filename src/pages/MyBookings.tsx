@@ -26,9 +26,9 @@ interface Booking {
     number: string;
     departure_time: string;
     arrival_time: string;
-    stations_from: { name: string; code: string } | null;
-    stations_to: { name: string; code: string } | null;
-  };
+    stations_from: { name: string; code: string }[] | null;
+    stations_to: { name: string; code: string }[] | null;
+  } | null;
 }
 
 const MyBookings = () => {
@@ -62,7 +62,7 @@ const MyBookings = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setBookings(data as Booking[] || []);
+      setBookings(data as any || []);
     } catch (error) {
       console.error('Error fetching bookings:', error);
       toast({
@@ -87,12 +87,12 @@ const MyBookings = () => {
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
     doc.text(`Booking ID: ${booking.booking_id}`, 20, 40);
-    doc.text(`Train: ${booking.trains.name} (${booking.trains.number})`, 20, 50);
-    doc.text(`From: ${booking.trains.stations_from?.name || 'Unknown'} (${booking.trains.stations_from?.code || 'N/A'})`, 20, 60);
-    doc.text(`To: ${booking.trains.stations_to?.name || 'Unknown'} (${booking.trains.stations_to?.code || 'N/A'})`, 20, 70);
+    doc.text(`Train: ${booking.trains?.name || 'Unknown Train'} (${booking.trains?.number || 'N/A'})`, 20, 50);
+    doc.text(`From: ${booking.trains?.stations_from?.[0]?.name || 'Unknown'} (${booking.trains?.stations_from?.[0]?.code || 'N/A'})`, 20, 60);
+    doc.text(`To: ${booking.trains?.stations_to?.[0]?.name || 'Unknown'} (${booking.trains?.stations_to?.[0]?.code || 'N/A'})`, 20, 70);
     doc.text(`Date: ${new Date(booking.journey_date).toLocaleDateString()}`, 20, 80);
-    doc.text(`Departure: ${booking.trains.departure_time}`, 20, 90);
-    doc.text(`Arrival: ${booking.trains.arrival_time}`, 20, 100);
+    doc.text(`Departure: ${booking.trains?.departure_time || 'N/A'}`, 20, 90);
+    doc.text(`Arrival: ${booking.trains?.arrival_time || 'N/A'}`, 20, 100);
     
     // Passenger details
     doc.text(`Passenger: ${booking.passenger_name}`, 20, 120);
@@ -147,10 +147,10 @@ const MyBookings = () => {
               <Card key={booking.id} className="overflow-hidden">
                 <CardHeader className="bg-primary/5">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2">
-                      <Train className="h-5 w-5 text-primary" />
-                      {booking.trains.name} - {booking.trains.number}
-                    </CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <Train className="h-5 w-5 text-primary" />
+                    {booking.trains?.name || 'Unknown Train'} - {booking.trains?.number || 'N/A'}
+                  </CardTitle>
                     <Badge variant={booking.status === 'confirmed' ? 'default' : 'secondary'}>
                       {booking.status.toUpperCase()}
                     </Badge>
@@ -166,9 +166,9 @@ const MyBookings = () => {
                         Route
                       </div>
                       <div className="text-sm">
-                        <div>{booking.trains.stations_from?.name || 'Unknown'}</div>
+                        <div>{booking.trains?.stations_from?.[0]?.name || 'Unknown'}</div>
                         <div className="text-muted-foreground">↓</div>
-                        <div>{booking.trains.stations_to?.name || 'Unknown'}</div>
+                        <div>{booking.trains?.stations_to?.[0]?.name || 'Unknown'}</div>
                       </div>
                     </div>
 
@@ -181,7 +181,7 @@ const MyBookings = () => {
                       <div className="text-sm">
                         <div>{new Date(booking.journey_date).toLocaleDateString()}</div>
                         <div className="text-muted-foreground">
-                          {booking.trains.departure_time} - {booking.trains.arrival_time}
+                          {booking.trains?.departure_time || 'N/A'} - {booking.trains?.arrival_time || 'N/A'}
                         </div>
                       </div>
                     </div>

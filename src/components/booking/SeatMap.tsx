@@ -120,47 +120,81 @@ const SeatMap = ({ trainId, selectedCoach, onSeatSelect, selectedSeats }: SeatMa
           </div>
         </div>
 
-        {/* Seat Map */}
-        <div className="space-y-4">
-          {groupedSeats.map((baySeats, bayIndex) => (
-            <div key={bayIndex} className="border rounded-lg p-4 bg-card">
-              <h4 className="text-sm font-medium mb-3">Bay {bayIndex + 1}</h4>
-              <div className="grid grid-cols-4 gap-2">
-                {/* Main berths (6 seats) */}
-                <div className="col-span-3 grid grid-cols-3 gap-2">
-                  {baySeats.slice(0, 6).map((seat) => (
-                    <Button
-                      key={seat.id}
-                      variant="outline"
-                      size="sm"
-                      className={`h-8 w-full text-xs transition-all ${getSeatColor(getSeatStatus(seat))}`}
-                      onClick={() => handleSeatClick(seat.seat_number)}
-                      disabled={!seat.is_available}
-                    >
-                      {seat.seat_number}
-                    </Button>
+                /* Seat Map - Indian Railway realistic layout */
+                <div className="space-y-4">
+                  {groupedSeats.map((baySeats, bayIndex) => (
+                    <div key={bayIndex} className="border rounded-lg p-4 bg-card">
+                      <h4 className="text-sm font-medium mb-3 text-center">Bay {bayIndex + 1}</h4>
+                      
+                      {/* Realistic Indian Railway Sleeper Layout */}
+                      <div className="relative">
+                        {/* Corridor representation */}
+                        <div className="absolute left-1/2 top-0 bottom-0 w-8 bg-muted/30 -translate-x-1/2 rounded"></div>
+                        
+                        <div className="grid grid-cols-2 gap-8">
+                          {/* Left Side Berths */}
+                          <div className="space-y-2">
+                            <div className="text-xs text-center text-muted-foreground mb-2">Side A</div>
+                            <div className="grid grid-cols-1 gap-1">
+                              {baySeats.slice(0, 3).map((seat) => (
+                                <Button
+                                  key={seat.id}
+                                  variant="outline"
+                                  size="sm"
+                                  className={`h-8 w-full text-xs transition-all ${getSeatColor(getSeatStatus(seat))}`}
+                                  onClick={() => handleSeatClick(seat.seat_number)}
+                                  disabled={!seat.is_available}
+                                >
+                                  {seat.seat_number}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          {/* Right Side Berths */}
+                          <div className="space-y-2">
+                            <div className="text-xs text-center text-muted-foreground mb-2">Side B</div>
+                            <div className="grid grid-cols-1 gap-1">
+                              {baySeats.slice(3, 6).map((seat) => (
+                                <Button
+                                  key={seat.id}
+                                  variant="outline"
+                                  size="sm"
+                                  className={`h-8 w-full text-xs transition-all ${getSeatColor(getSeatStatus(seat))}`}
+                                  onClick={() => handleSeatClick(seat.seat_number)}
+                                  disabled={!seat.is_available}
+                                >
+                                  {seat.seat_number}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Side Upper and Lower berths at the bottom */}
+                        {baySeats.slice(6, 8).length > 0 && (
+                          <div className="mt-4 pt-4 border-t border-muted">
+                            <div className="text-xs text-center text-muted-foreground mb-2">Side Berths</div>
+                            <div className="flex justify-center gap-2">
+                              {baySeats.slice(6, 8).map((seat) => (
+                                <Button
+                                  key={seat.id}
+                                  variant="outline"
+                                  size="sm"
+                                  className={`h-8 w-16 text-xs transition-all ${getSeatColor(getSeatStatus(seat))}`}
+                                  onClick={() => handleSeatClick(seat.seat_number)}
+                                  disabled={!seat.is_available}
+                                >
+                                  {seat.seat_number}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   ))}
                 </div>
-                
-                {/* Side berths (2 seats) */}
-                <div className="grid grid-cols-1 gap-2">
-                  {baySeats.slice(6, 8).map((seat) => (
-                    <Button
-                      key={seat.id}
-                      variant="outline"
-                      size="sm"
-                      className={`h-8 w-full text-xs transition-all ${getSeatColor(getSeatStatus(seat))}`}
-                      onClick={() => handleSeatClick(seat.seat_number)}
-                      disabled={!seat.is_available}
-                    >
-                      {seat.seat_number}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
 
         {/* Selected seats summary */}
         {selectedSeats.length > 0 && (
