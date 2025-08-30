@@ -11,7 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/layout/Header";
-import SeatMap from "@/components/booking/SeatMap";
+import SeatMap from "@/components/booking/IndianRailSeatMap";
 
 const Booking = () => {
   const location = useLocation();
@@ -141,7 +141,7 @@ const Booking = () => {
                     </CardHeader>
                   </Card>
                   
-                  <SeatMap 
+            <SeatMap
                     trainId={trainData.id} 
                     selectedCoach={selectedCoach}
                     onSeatSelect={handleSeatSelection}
