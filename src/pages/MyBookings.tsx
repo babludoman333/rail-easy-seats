@@ -62,7 +62,7 @@ const MyBookings = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setBookings(data || []);
+      setBookings(data as Booking[] || []);
     } catch (error) {
       console.error('Error fetching bookings:', error);
       toast({
