@@ -22,10 +22,25 @@ const BookingConfirmed = () => {
 
   const saveBookingToDatabase = async () => {
     try {
+      // Validate required data
+      if (!bookingData.journeyDate || !bookingData.train?.id || !user?.id) {
+        console.error('Missing required booking data:', {
+          journeyDate: bookingData.journeyDate,
+          trainId: bookingData.train?.id,
+          userId: user?.id
+        });
+        toast({
+          title: "Error",
+          description: "Missing required booking information",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from('bookings')
         .insert({
-          user_id: user?.id,
+          user_id: user.id,
           train_id: bookingData.train.id,
           booking_id: bookingData.bookingId,
           passenger_name: bookingData.passenger.name,
@@ -46,9 +61,16 @@ const BookingConfirmed = () => {
           description: "Booking confirmed but not saved to database",
           variant: "destructive"
         });
+      } else {
+        console.log('Booking saved successfully');
       }
     } catch (error) {
       console.error('Error saving booking:', error);
+      toast({
+        title: "Warning", 
+        description: "Booking confirmed but not saved to database",
+        variant: "destructive"
+      });
     }
   };
 

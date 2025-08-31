@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import ClassSpecificSeatLayouts from "./ClassSpecificSeatLayouts";
 
 interface Seat {
   id: string;
@@ -129,9 +130,12 @@ const IndianRailSeatMap = ({ trainId, selectedCoach, onSeatSelect, selectedSeats
             <SelectContent>
               <SelectItem value="Sleeper">Sleeper (SL)</SelectItem>
               <SelectItem value="AC 3 Tier">AC 3 Tier (3A)</SelectItem>
+              <SelectItem value="AC 3 Tier Economy">AC 3 Tier Economy (3E)</SelectItem>
               <SelectItem value="AC 2 Tier">AC 2 Tier (2A)</SelectItem>
               <SelectItem value="AC 1 Tier">AC 1 Tier (1A)</SelectItem>
               <SelectItem value="Chair Car">Chair Car (CC)</SelectItem>
+              <SelectItem value="Executive Chair Car">Executive Chair Car (EC)</SelectItem>
+              <SelectItem value="Second Sitting">Second Sitting (2S)</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -157,97 +161,29 @@ const IndianRailSeatMap = ({ trainId, selectedCoach, onSeatSelect, selectedSeats
           </div>
         </div>
 
-        {/* Indian Railway Sleeper Coach Layout */}
-        <div className="space-y-6">
-          {groupedSeats.map((compartmentSeats, compartmentIndex) => (
-            <div key={compartmentIndex} className="border-2 border-primary/20 rounded-lg p-4 bg-card/50">
-              <h4 className="text-sm font-medium mb-3 text-center bg-primary/10 rounded px-2 py-1">
-                Compartment {compartmentIndex + 1}
-              </h4>
-              
-              <div className="grid grid-cols-8 gap-2 max-w-4xl mx-auto">
-                {/* Main berth area (6 berths in 2 columns) */}
-                <div className="col-span-6 grid grid-cols-2 gap-4">
-                  {/* Left side berths (1, 2, 3) */}
-                  <div className="space-y-1">
-                    {compartmentSeats.slice(0, 3).map((seat) => (
-                      <Button
-                        key={seat.id}
-                        variant="outline"
-                        size="sm"
-                        className={`h-12 w-full text-xs transition-all border-2 ${getSeatColor(getSeatStatus(seat))}`}
-                        onClick={() => handleSeatClick(seat.seat_number)}
-                        disabled={!seat.is_available}
-                      >
-                        <div className="flex flex-col items-center">
-                          <span>{getBerthIcon(seat.seat_number)}</span>
-                          <span className="text-xs">{seat.seat_number}</span>
-                        </div>
-                      </Button>
-                    ))}
-                  </div>
-                  
-                  {/* Right side berths (4, 5, 6) */}
-                  <div className="space-y-1">
-                    {compartmentSeats.slice(3, 6).map((seat) => (
-                      <Button
-                        key={seat.id}
-                        variant="outline"
-                        size="sm"
-                        className={`h-12 w-full text-xs transition-all border-2 ${getSeatColor(getSeatStatus(seat))}`}
-                        onClick={() => handleSeatClick(seat.seat_number)}
-                        disabled={!seat.is_available}
-                      >
-                        <div className="flex flex-col items-center">
-                          <span>{getBerthIcon(seat.seat_number)}</span>
-                          <span className="text-xs">{seat.seat_number}</span>
-                        </div>
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Side berths (7, 8) */}
-                <div className="col-span-2 space-y-2">
-                  {compartmentSeats.slice(6, 8).map((seat) => (
-                    <Button
-                      key={seat.id}
-                      variant="outline"
-                      size="sm"
-                      className={`h-16 w-full text-xs transition-all border-2 ${getSeatColor(getSeatStatus(seat))}`}
-                      onClick={() => handleSeatClick(seat.seat_number)}
-                      disabled={!seat.is_available}
-                    >
-                      <div className="flex flex-col items-center">
-                        <span>{getBerthIcon(seat.seat_number)}</span>
-                        <span className="text-xs">{seat.seat_number}</span>
-                      </div>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Compartment info */}
-              <div className="mt-2 text-center">
-                <div className="text-xs text-muted-foreground">
-                  Window | Aisle | | Aisle | Window | Side
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Class-specific seat layouts */}
+        <ClassSpecificSeatLayouts
+          seats={seats}
+          selectedSeats={selectedSeats}
+          onSeatClick={handleSeatClick}
+          getSeatStatus={getSeatStatus}
+          getSeatColor={getSeatColor}
+          selectedClass={selectedClass}
+        />
 
-        {/* Berth Type Legend */}
-        <div className="mt-6 p-4 bg-muted/20 rounded-lg">
-          <h4 className="font-medium mb-2">Berth Types</h4>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
-            <div><strong>LB:</strong> Lower Berth</div>
-            <div><strong>MB:</strong> Middle Berth</div>
-            <div><strong>UB:</strong> Upper Berth</div>
-            <div><strong>SL:</strong> Side Lower</div>
-            <div><strong>SU:</strong> Side Upper</div>
+        {/* Berth Type Legend - only for sleeper and AC classes */}
+        {(selectedClass === 'Sleeper' || selectedClass.includes('AC')) && selectedClass !== 'Second Sitting' && (
+          <div className="mt-6 p-4 bg-muted/20 rounded-lg">
+            <h4 className="font-medium mb-2">Berth Types</h4>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
+              <div><strong>LB:</strong> Lower Berth</div>
+              <div><strong>MB:</strong> Middle Berth</div>
+              <div><strong>UB:</strong> Upper Berth</div>
+              <div><strong>SL:</strong> Side Lower</div>
+              <div><strong>SU:</strong> Side Upper</div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Selected seats summary */}
         {selectedSeats.length > 0 && (
