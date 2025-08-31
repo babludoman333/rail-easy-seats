@@ -11,7 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/layout/Header";
-import SeatMap from "@/components/booking/IndianRailSeatMap";
+import IndianRailSeatMap from "@/components/booking/IndianRailSeatMap";
 
 const Booking = () => {
   const location = useLocation();
@@ -24,6 +24,7 @@ const Booking = () => {
   const [step, setStep] = useState(1); // 1: seat selection, 2: passenger details, 3: confirm
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [selectedCoach, setSelectedCoach] = useState("S1");
+  const [selectedClass, setSelectedClass] = useState("Sleeper");
   const [journeyDate, setJourneyDate] = useState("");
   const [passengerData, setPassengerData] = useState({
     name: "",
@@ -65,6 +66,10 @@ const Booking = () => {
     setSelectedSeats(seats);
   };
 
+  const handleClassSelection = (classType: string) => {
+    setSelectedClass(classType);
+  };
+
   const handlePassengerSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedSeats.length === 0) {
@@ -83,6 +88,7 @@ const Booking = () => {
       train: trainData,
       selectedSeats,
       selectedCoach,
+      selectedClass,
       journeyDate,
       passenger: passengerData,
       totalAmount
@@ -133,6 +139,7 @@ const Booking = () => {
                         <Input
                           id="journey-date"
                           type="date"
+                          min={new Date().toISOString().split('T')[0]}
                           value={journeyDate}
                           onChange={(e) => setJourneyDate(e.target.value)}
                           required
@@ -141,11 +148,13 @@ const Booking = () => {
                     </CardHeader>
                   </Card>
                   
-            <SeatMap
+            <IndianRailSeatMap
                     trainId={trainData.id} 
                     selectedCoach={selectedCoach}
                     onSeatSelect={handleSeatSelection}
                     selectedSeats={selectedSeats}
+                    selectedClass={selectedClass}
+                    onClassSelect={handleClassSelection}
                   />
                   
                   {selectedSeats.length > 0 && (
@@ -297,11 +306,15 @@ const Booking = () => {
 
                   <Separator />
 
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Coach:</span>
-                      <Badge variant="outline">{selectedCoach}</Badge>
-                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Class:</span>
+                        <Badge variant="outline">{selectedClass}</Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Coach:</span>
+                        <Badge variant="outline">{selectedCoach}</Badge>
+                      </div>
                     <div className="flex justify-between">
                       <span>Seats:</span>
                       <span className="font-medium">

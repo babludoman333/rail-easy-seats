@@ -40,8 +40,7 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
   const [searchData, setSearchData] = useState({
     from: "",
     to: "",
-    date: "",
-    class: ""
+    date: ""
   });
   const [stations, setStations] = useState<Station[]>([]);
   const { toast } = useToast();
@@ -75,8 +74,22 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
   const handleSearch = async () => {
     if (!searchData.from || !searchData.to || !searchData.date) {
       toast({
-        title: "Missing Information",
+        title: "Missing Information", 
         description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check if selected date is in the future
+    const selectedDate = new Date(searchData.date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (selectedDate < today) {
+      toast({
+        title: "Invalid Date",
+        description: "Please select a future date for your journey",
         variant: "destructive"
       });
       return;
@@ -114,7 +127,7 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
         <p className="text-muted-foreground">Search and book railway tickets with ease</p>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           {/* From Station */}
           <div className="space-y-2">
             <Label htmlFor="from" className="text-sm font-medium">From</Label>
@@ -170,27 +183,11 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
                 id="date"
                 type="date"
                 className="pl-10"
+                min={new Date().toISOString().split('T')[0]}
                 value={searchData.date}
                 onChange={(e) => setSearchData(prev => ({ ...prev, date: e.target.value }))}
               />
             </div>
-          </div>
-
-          {/* Class */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Class</Label>
-            <Select value={searchData.class} onValueChange={(value) => setSearchData(prev => ({ ...prev, class: value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select class" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="sleeper">Sleeper (SL)</SelectItem>
-                <SelectItem value="3ac">AC 3 Tier (3A)</SelectItem>
-                <SelectItem value="2ac">AC 2 Tier (2A)</SelectItem>
-                <SelectItem value="1ac">AC 1 Tier (1A)</SelectItem>
-                <SelectItem value="cc">Chair Car (CC)</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
 

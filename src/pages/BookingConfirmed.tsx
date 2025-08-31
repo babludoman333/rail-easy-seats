@@ -1,12 +1,56 @@
 import { useLocation, Link } from "react-router-dom";
+import { useEffect } from "react";
 import { CheckCircle, Download, Home, Calendar, MapPin, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const BookingConfirmed = () => {
   const location = useLocation();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const bookingData = location.state;
+
+  useEffect(() => {
+    if (bookingData && user) {
+      saveBookingToDatabase();
+    }
+  }, [bookingData, user]);
+
+  const saveBookingToDatabase = async () => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .insert({
+          user_id: user?.id,
+          train_id: bookingData.train.id,
+          booking_id: bookingData.bookingId,
+          passenger_name: bookingData.passenger.name,
+          passenger_age: parseInt(bookingData.passenger.age),
+          passenger_gender: bookingData.passenger.gender,
+          journey_date: bookingData.journeyDate,
+          seat_numbers: bookingData.selectedSeats,
+          coach: bookingData.selectedCoach,
+          class: bookingData.selectedClass || 'Sleeper',
+          total_amount: bookingData.totalAmount,
+          status: 'confirmed'
+        });
+
+      if (error) {
+        console.error('Error saving booking:', error);
+        toast({
+          title: "Warning",
+          description: "Booking confirmed but not saved to database",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error saving booking:', error);
+    }
+  };
 
   if (!bookingData) {
     return (
@@ -63,16 +107,16 @@ const BookingConfirmed = () => {
             {/* Route Information */}
             <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
               <div className="text-center">
-                <div className="font-semibold">{bookingData.train.departure}</div>
-                <div className="text-sm text-muted-foreground">{bookingData.train.from}</div>
+                <div className="font-semibold">{bookingData.train.departure_time}</div>
+                <div className="text-sm text-muted-foreground">{bookingData.train.from_station?.name}</div>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <MapPin className="h-4 w-4" />
                 <span className="text-sm">{bookingData.train.duration}</span>
               </div>
               <div className="text-center">
-                <div className="font-semibold">{bookingData.train.arrival}</div>
-                <div className="text-sm text-muted-foreground">{bookingData.train.to}</div>
+                <div className="font-semibold">{bookingData.train.arrival_time}</div>
+                <div className="text-sm text-muted-foreground">{bookingData.train.to_station?.name}</div>
               </div>
             </div>
 
@@ -85,6 +129,10 @@ const BookingConfirmed = () => {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Age/Gender:</span>
                 <span>{bookingData.passenger.age} / {bookingData.passenger.gender}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Class:</span>
+                <span>{bookingData.selectedClass || 'Sleeper'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Coach:</span>

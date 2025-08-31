@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Seat {
@@ -17,9 +19,11 @@ interface IndianRailSeatMapProps {
   selectedCoach: string;
   onSeatSelect: (seats: string[]) => void;
   selectedSeats: string[];
+  selectedClass: string;
+  onClassSelect: (classType: string) => void;
 }
 
-const IndianRailSeatMap = ({ trainId, selectedCoach, onSeatSelect, selectedSeats }: IndianRailSeatMapProps) => {
+const IndianRailSeatMap = ({ trainId, selectedCoach, onSeatSelect, selectedSeats, selectedClass, onClassSelect }: IndianRailSeatMapProps) => {
   const [seats, setSeats] = useState<Seat[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -108,12 +112,29 @@ const IndianRailSeatMap = ({ trainId, selectedCoach, onSeatSelect, selectedSeats
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          Coach {selectedCoach} - {seats.length > 0 ? seats[0].class : 'Sleeper'}
+          Coach {selectedCoach} - {selectedClass || 'Sleeper'}
           <Badge variant="outline">{seats.length} seats</Badge>
         </CardTitle>
         <p className="text-sm text-muted-foreground">
           Select your preferred berth. Click on available seats to book.
         </p>
+        
+        {/* Class Selection */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Class</Label>
+          <Select value={selectedClass} onValueChange={onClassSelect}>
+            <SelectTrigger className="max-w-xs">
+              <SelectValue placeholder="Select class" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Sleeper">Sleeper (SL)</SelectItem>
+              <SelectItem value="AC 3 Tier">AC 3 Tier (3A)</SelectItem>
+              <SelectItem value="AC 2 Tier">AC 2 Tier (2A)</SelectItem>
+              <SelectItem value="AC 1 Tier">AC 1 Tier (1A)</SelectItem>
+              <SelectItem value="Chair Car">Chair Car (CC)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent>
         {/* Legend */}
