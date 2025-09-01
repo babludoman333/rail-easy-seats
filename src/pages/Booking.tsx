@@ -155,27 +155,18 @@ const Booking = () => {
                   <Card>
                     <CardHeader>
                       <CardTitle>Select Your Seats</CardTitle>
-                      <div className="space-y-2">
-                        <Label htmlFor="journey-date">Journey Date</Label>
-                        <Input
-                          id="journey-date"
-                          type="date"
-                          min={new Date().toISOString().split('T')[0]}
-                          value={journeyDate}
-                          onChange={(e) => setJourneyDate(e.target.value)}
-                          required
-                        />
-                      </div>
                     </CardHeader>
                   </Card>
                   
-            <IndianRailSeatMap
+                  <IndianRailSeatMap
                     trainId={trainData.id} 
                     selectedCoach={selectedCoach}
                     onSeatSelect={handleSeatSelection}
                     selectedSeats={selectedSeats}
                     selectedClass={selectedClass}
                     onClassSelect={handleClassSelection}
+                    selectedDate={journeyDate ? new Date(journeyDate) : new Date()}
+                    onDateSelect={(date) => setJourneyDate(date.toISOString().split('T')[0])}
                   />
                   
                   {selectedSeats.length > 0 && (
