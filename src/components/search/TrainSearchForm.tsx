@@ -27,6 +27,8 @@ interface Train {
   duration: string;
   price: number;
   total_seats: number;
+  operating_days: string[];
+  class_prices: any;
   from_station?: Station;
   to_station?: Station;
 }
@@ -117,7 +119,15 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
       return;
     }
     
-    onSearch(data || []);
+    // Filter trains based on operating days
+    const searchDate = new Date(searchData.date);
+    const dayName = searchDate.toLocaleDateString('en-US', { weekday: 'long' });
+    
+    const filteredTrains = (data || []).filter(train => 
+      train.operating_days && train.operating_days.includes(dayName)
+    );
+    
+    onSearch(filteredTrains);
   };
 
   return (

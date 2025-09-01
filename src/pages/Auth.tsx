@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, Train, User } from "lucide-react";
+import { Mail, Lock, Train, User, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,6 +50,13 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
+        {/* Back to Home Button */}
+        <div className="mb-4">
+          <Button variant="ghost" onClick={() => navigate('/')} className="text-sm">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
+          </Button>
+        </div>
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <Link to="/" className="flex items-center space-x-2">

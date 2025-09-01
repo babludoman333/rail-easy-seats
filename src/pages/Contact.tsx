@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -44,6 +46,14 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
+        {/* Back to Home Button */}
+        <div className="mb-6">
+          <Button variant="ghost" onClick={() => navigate('/')} className="text-sm">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
+          </Button>
+        </div>
+        
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-foreground mb-2">Contact Us</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { CreditCard, Lock, ArrowLeft } from "lucide-react";
+import { CreditCard, Lock, ArrowLeft, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,7 +32,12 @@ const Payment = () => {
         <Card>
           <CardContent className="text-center p-8">
             <p className="text-muted-foreground mb-4">No booking data found</p>
-            <Button onClick={() => navigate('/')}>Go Home</Button>
+            <div className="flex gap-2 justify-center">
+              <Button onClick={() => navigate('/')}>
+                <Home className="h-4 w-4 mr-2" />
+                Go Home
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

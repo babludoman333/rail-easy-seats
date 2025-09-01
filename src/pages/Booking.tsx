@@ -60,7 +60,27 @@ const Booking = () => {
     return null;
   }
 
-  const totalAmount = selectedSeats.length * trainData.price + 50; // Base fare + booking fee
+  // Get class-specific price
+  const getClassPrice = () => {
+    const classCode = getClassCode(selectedClass);
+    return trainData.class_prices?.[classCode] || trainData.price;
+  };
+
+  const getClassCode = (className: string) => {
+    const classMap: Record<string, string> = {
+      'AC First Class': '1A',
+      'AC Two-Tier': '2A', 
+      'AC Three-Tier': '3A',
+      'AC Three-Tier Economy': '3E',
+      'Sleeper': 'SL',
+      'Chair Car': 'CC',
+      'Executive Chair Car': 'EC',
+      'Second Sitting': '2S'
+    };
+    return classMap[className] || 'SL';
+  };
+
+  const totalAmount = selectedSeats.length * getClassPrice() + 50; // Class-specific fare + booking fee
 
   const handleSeatSelection = (seats: string[]) => {
     setSelectedSeats(seats);
@@ -91,7 +111,8 @@ const Booking = () => {
       selectedClass,
       journeyDate,
       passenger: passengerData,
-      totalAmount
+      totalAmount,
+      classPrice: getClassPrice()
     };
     
     navigate('/payment', { state: bookingData });
@@ -332,8 +353,8 @@ const Booking = () => {
                       <Separator />
                       <div className="space-y-2">
                         <div className="flex justify-between">
-                          <span>Base Fare:</span>
-                          <span>₹{(selectedSeats.length * trainData.price).toLocaleString()}</span>
+                          <span>Base Fare ({selectedClass}):</span>
+                          <span>₹{(selectedSeats.length * getClassPrice()).toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Booking Fee:</span>

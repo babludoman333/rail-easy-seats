@@ -50,6 +50,7 @@ const BookingConfirmed = () => {
           seat_numbers: bookingData.selectedSeats,
           coach: bookingData.selectedCoach,
           class: bookingData.selectedClass || 'Sleeper',
+          class_price: bookingData.classPrice || 0,
           total_amount: bookingData.totalAmount,
           status: 'confirmed'
         });

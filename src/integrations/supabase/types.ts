@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           booking_id: string
           class: string
+          class_price: number | null
           coach: string
           created_at: string
           id: string
@@ -34,6 +35,7 @@ export type Database = {
         Insert: {
           booking_id: string
           class: string
+          class_price?: number | null
           coach: string
           created_at?: string
           id?: string
@@ -50,6 +52,7 @@ export type Database = {
         Update: {
           booking_id?: string
           class?: string
+          class_price?: number | null
           coach?: string
           created_at?: string
           id?: string
@@ -165,6 +168,7 @@ export type Database = {
       trains: {
         Row: {
           arrival_time: string
+          class_prices: Json | null
           created_at: string
           departure_time: string
           duration: string
@@ -172,12 +176,14 @@ export type Database = {
           id: string
           name: string
           number: string
+          operating_days: string[] | null
           price: number
           to_station_id: string
           total_seats: number
         }
         Insert: {
           arrival_time: string
+          class_prices?: Json | null
           created_at?: string
           departure_time: string
           duration: string
@@ -185,12 +191,14 @@ export type Database = {
           id?: string
           name: string
           number: string
+          operating_days?: string[] | null
           price: number
           to_station_id: string
           total_seats?: number
         }
         Update: {
           arrival_time?: string
+          class_prices?: Json | null
           created_at?: string
           departure_time?: string
           duration?: string
@@ -198,6 +206,7 @@ export type Database = {
           id?: string
           name?: string
           number?: string
+          operating_days?: string[] | null
           price?: number
           to_station_id?: string
           total_seats?: number

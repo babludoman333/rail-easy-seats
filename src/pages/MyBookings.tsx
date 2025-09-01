@@ -4,8 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Train, Calendar, MapPin, Users, Download } from "lucide-react";
+import { Train, Calendar, MapPin, Users, Download, ArrowLeft, Home } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import jsPDF from 'jspdf';
 
 interface Booking {
@@ -36,6 +37,7 @@ const MyBookings = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -143,19 +145,31 @@ const MyBookings = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
+        {/* Back to Home Button */}
+        <div className="mb-6">
+          <Button variant="ghost" onClick={() => navigate('/')} className="text-sm">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
+          </Button>
+        </div>
+        
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">My Bookings</h1>
           <p className="text-muted-foreground">View and manage your train reservations</p>
         </div>
 
         {bookings.length === 0 ? (
-          <Card>
-            <CardContent className="p-8 text-center">
-              <Train className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No bookings found</h3>
-              <p className="text-muted-foreground">You haven't made any train reservations yet.</p>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardContent className="p-8 text-center">
+                <Train className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-medium mb-2">No bookings found</h3>
+                <p className="text-muted-foreground mb-4">You haven't made any train reservations yet.</p>
+                <Button onClick={() => navigate('/')} className="flex items-center gap-2">
+                  <Home className="h-4 w-4" />
+                  Book Your First Train
+                </Button>
+              </CardContent>
+            </Card>
         ) : (
           <div className="space-y-6">
             {bookings.map((booking) => (

@@ -26,6 +26,8 @@ interface Train {
   duration: string;
   price: number;
   total_seats: number;
+  operating_days?: string[];
+  class_prices?: any;
   from_station?: Station;
   to_station?: Station;
 }
@@ -86,12 +88,34 @@ const Index = () => {
                           </div>
                           <div>Duration: {train.duration}</div>
                         </div>
+                        {train.operating_days && (
+                          <div className="mt-2">
+                            <div className="text-xs text-muted-foreground mb-1">Operating Days:</div>
+                            <div className="flex flex-wrap gap-1">
+                              {train.operating_days.map((day, index) => (
+                                <Badge key={index} variant="secondary" className="text-xs">
+                                  {day.slice(0, 3)}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                       
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <div className="text-2xl font-bold">₹{train.price.toLocaleString()}</div>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                          {train.class_prices ? (
+                            <div>
+                              <div className="text-2xl font-bold">
+                                ₹{Math.min(...Object.values(train.class_prices as Record<string, number>)).toLocaleString()} 
+                                - ₹{Math.max(...Object.values(train.class_prices as Record<string, number>)).toLocaleString()}
+                              </div>
+                              <div className="text-xs text-muted-foreground">Price range by class</div>
+                            </div>
+                          ) : (
+                            <div className="text-2xl font-bold">₹{train.price.toLocaleString()}</div>
+                          )}
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
                             <Users className="h-4 w-4" />
                             {train.total_seats} seats
                           </div>
