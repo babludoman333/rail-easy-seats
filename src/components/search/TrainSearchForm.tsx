@@ -119,9 +119,8 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
       return;
     }
     
-    // Filter trains based on operating days
-    const searchDate = new Date(searchData.date);
-    const dayName = searchDate.toLocaleDateString('en-US', { weekday: 'long' });
+    // Filter trains based on operating days (reuse selectedDate)
+    const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
     
     const filteredTrains = (data || []).filter(train => 
       train.operating_days && train.operating_days.includes(dayName)
