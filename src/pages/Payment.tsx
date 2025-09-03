@@ -104,7 +104,7 @@ const Payment = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Route:</span>
-                  <span>{bookingData.train.from} → {bookingData.train.to}</span>
+                  <span>{bookingData.train.from_station?.name || 'Unknown'} → {bookingData.train.to_station?.name || 'Unknown'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Date:</span>
