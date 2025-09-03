@@ -29,6 +29,7 @@ interface IndianRailSeatMapProps {
   onClassSelect: (classType: string) => void;
   selectedDate?: Date;
   onDateSelect?: (date: Date) => void;
+  onCoachSelect?: (coach: string) => void;
 }
 
 const IndianRailSeatMap = ({ 
@@ -39,16 +40,19 @@ const IndianRailSeatMap = ({
   selectedClass, 
   onClassSelect,
   selectedDate = new Date(),
-  onDateSelect 
+  onDateSelect,
+  onCoachSelect
 }: IndianRailSeatMapProps) => {
   const [seats, setSeats] = useState<Seat[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateAvailability, setDateAvailability] = useState<Record<string, number>>({});
   const [availableDates, setAvailableDates] = useState<Date[]>([]);
+  const [availableCoaches, setAvailableCoaches] = useState<string[]>([]);
 
   useEffect(() => {
     fetchSeats();
     fetchDateAvailability();
+    generateAvailableCoaches();
   }, [trainId, selectedCoach, selectedClass, selectedDate]);
 
   const fetchSeats = async () => {
@@ -100,6 +104,52 @@ const IndianRailSeatMap = ({
     
     setAvailableDates(dates);
     setDateAvailability(availability);
+  };
+
+  const generateAvailableCoaches = () => {
+    const classCode = getClassCode(selectedClass);
+    let coachPrefix = '';
+    let coachCount = 6;
+    
+    switch (classCode) {
+      case '1A':
+        coachPrefix = 'H';
+        coachCount = 2;
+        break;
+      case '2A':
+        coachPrefix = 'A';
+        coachCount = 4;
+        break;
+      case '3A':
+        coachPrefix = 'B';
+        coachCount = 6;
+        break;
+      case '3E':
+        coachPrefix = 'E';
+        coachCount = 8;
+        break;
+      case 'CC':
+        coachPrefix = 'C';
+        coachCount = 4;
+        break;
+      case 'EC':
+        coachPrefix = 'EC';
+        coachCount = 2;
+        break;
+      case '2S':
+        coachPrefix = 'D';
+        coachCount = 8;
+        break;
+      default: // SL
+        coachPrefix = 'S';
+        coachCount = 12;
+    }
+    
+    const coaches = [];
+    for (let i = 1; i <= coachCount; i++) {
+      coaches.push(`${coachPrefix}${i}`);
+    }
+    setAvailableCoaches(coaches);
   };
 
   const getClassCode = (className: string) => {
@@ -294,30 +344,77 @@ const IndianRailSeatMap = ({
             Select your preferred seats. Click on available seats to book.
           </p>
           
-          {/* Class Selection */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Class</Label>
-            <Select value={selectedClass} onValueChange={onClassSelect}>
-              <SelectTrigger className="max-w-xs">
-                <SelectValue placeholder="Select class" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Sleeper">Sleeper (SL)</SelectItem>
-                <SelectItem value="AC 3 Tier">AC 3 Tier (3A)</SelectItem>
-                <SelectItem value="AC 3 Tier Economy">AC 3 Tier Economy (3E)</SelectItem>
-                <SelectItem value="AC 2 Tier">AC 2 Tier (2A)</SelectItem>
-                <SelectItem value="AC 1 Tier">AC 1 Tier (1A)</SelectItem>
-                <SelectItem value="Chair Car">Chair Car (CC)</SelectItem>
-                <SelectItem value="Executive Chair Car">Executive Chair Car (EC)</SelectItem>
-                <SelectItem value="Second Sitting">Second Sitting (2S)</SelectItem>
-              </SelectContent>
-            </Select>
+          {/* Class and Coach Selection */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Class</Label>
+              <Select value={selectedClass} onValueChange={onClassSelect}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select class" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Sleeper">Sleeper (SL)</SelectItem>
+                  <SelectItem value="AC 3 Tier">AC 3 Tier (3A)</SelectItem>
+                  <SelectItem value="AC 3 Tier Economy">AC 3 Tier Economy (3E)</SelectItem>
+                  <SelectItem value="AC 2 Tier">AC 2 Tier (2A)</SelectItem>
+                  <SelectItem value="AC 1 Tier">AC 1 Tier (1A)</SelectItem>
+                  <SelectItem value="Chair Car">Chair Car (CC)</SelectItem>
+                  <SelectItem value="Executive Chair Car">Executive Chair Car (EC)</SelectItem>
+                  <SelectItem value="Second Sitting">Second Sitting (2S)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Coach</Label>
+              <Select value={selectedCoach} onValueChange={(value) => onCoachSelect?.(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select coach" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableCoaches.map((coach) => (
+                    <SelectItem key={coach} value={coach}>
+                      Coach {coach}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-pulse">Loading seat map...</div>
+            </div>
+          ) : selectedSeats.length > 0 ? (
+            // Show selected seats summary when seats are selected
+            <div className="p-6 bg-selected/10 rounded-lg border border-selected/20">
+              <h4 className="font-medium mb-4 text-center">Seats Selected Successfully!</h4>
+              <div className="space-y-4">
+                <div className="text-center">
+                  <div className="text-lg font-semibold">Coach {selectedCoach} - {selectedClass}</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    Journey Date: {format(selectedDate, 'MMM dd, yyyy')}
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {selectedSeats.map(seatNumber => (
+                    <Badge key={seatNumber} variant="secondary" className="bg-selected/20 text-selected-foreground">
+                      {getBerthIcon(seatNumber)} {seatNumber}
+                    </Badge>
+                  ))}
+                </div>
+                <div className="text-center">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => onSeatSelect([])}
+                  >
+                    Change Seats
+                  </Button>
+                </div>
+              </div>
             </div>
           ) : (
             <>
@@ -361,20 +458,6 @@ const IndianRailSeatMap = ({
                     <div><strong>UB:</strong> Upper Berth</div>
                     <div><strong>SL:</strong> Side Lower</div>
                     <div><strong>SU:</strong> Side Upper</div>
-                  </div>
-                </div>
-              )}
-
-              {/* Selected seats summary */}
-              {selectedSeats.length > 0 && (
-                <div className="mt-6 p-4 bg-selected/10 rounded-lg border border-selected/20">
-                  <h4 className="font-medium mb-2">Selected Seats ({selectedSeats.length})</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedSeats.map(seatNumber => (
-                      <Badge key={seatNumber} variant="secondary" className="bg-selected/20 text-selected-foreground">
-                        {getBerthIcon(seatNumber)} {seatNumber}
-                      </Badge>
-                    ))}
                   </div>
                 </div>
               )}

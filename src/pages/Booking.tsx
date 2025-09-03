@@ -24,6 +24,10 @@ const Booking = () => {
   const [step, setStep] = useState(1); // 1: seat selection, 2: passenger details, 3: confirm
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [selectedCoach, setSelectedCoach] = useState("S1");
+  
+  const handleCoachSelection = (coach: string) => {
+    setSelectedCoach(coach);
+  };
   const [selectedClass, setSelectedClass] = useState("Sleeper");
   const [journeyDate, setJourneyDate] = useState("");
   const [passengerData, setPassengerData] = useState({
@@ -167,6 +171,7 @@ const Booking = () => {
                     onClassSelect={handleClassSelection}
                     selectedDate={journeyDate ? new Date(journeyDate) : new Date()}
                     onDateSelect={(date) => setJourneyDate(date.toISOString().split('T')[0])}
+                    onCoachSelect={handleCoachSelection}
                   />
                   
                   {selectedSeats.length > 0 && (
@@ -300,9 +305,15 @@ const Booking = () => {
                   <div>
                     <p className="font-medium">{trainData.name}</p>
                     <Badge variant="outline" className="mt-1">{trainData.number}</Badge>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      {trainData.from_station?.name} → {trainData.to_station?.name}
-                    </p>
+                    <div className="space-y-1 mt-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Route:</span>
+                        <span className="font-medium">{trainData.from_station?.name} → {trainData.to_station?.name}</span>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {trainData.from_station?.code} - {trainData.to_station?.code}
+                      </div>
+                    </div>
                     <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />

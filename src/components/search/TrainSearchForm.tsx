@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -42,7 +43,8 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
   const [searchData, setSearchData] = useState({
     from: "",
     to: "",
-    date: ""
+    date: "",
+    dateFlexible: false
   });
   const [stations, setStations] = useState<Station[]>([]);
   const { toast } = useToast();
@@ -120,11 +122,16 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
     }
     
     // Filter trains based on operating days (reuse selectedDate)
-    const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
-    
-    const filteredTrains = (data || []).filter(train => 
-      train.operating_days && train.operating_days.includes(dayName)
-    );
+    let filteredTrains;
+    if (searchData.dateFlexible) {
+      // Show all trains regardless of operating days
+      filteredTrains = data || [];
+    } else {
+      const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+      filteredTrains = (data || []).filter(train => 
+        train.operating_days && train.operating_days.includes(dayName)
+      );
+    }
     
     onSearch(filteredTrains);
   };
@@ -198,6 +205,18 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
               />
             </div>
           </div>
+        </div>
+
+        {/* Date Flexibility Option */}
+        <div className="flex items-center space-x-2 justify-center">
+          <Checkbox 
+            id="dateFlexible"
+            checked={searchData.dateFlexible}
+            onCheckedChange={(checked) => setSearchData(prev => ({ ...prev, dateFlexible: !!checked }))}
+          />
+          <Label htmlFor="dateFlexible" className="text-sm">
+            Show trains regardless of availability (Date Flexible)
+          </Label>
         </div>
 
         {/* Search Button */}

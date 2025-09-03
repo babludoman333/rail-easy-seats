@@ -50,7 +50,7 @@ const Payment = () => {
     
     // Simulate payment processing
     setTimeout(() => {
-      const bookingId = 'PNR' + Math.random().toString(36).substr(2, 9).toUpperCase();
+      const bookingId = Math.floor(Math.random() * 9000000000) + 1000000000; // 10-digit number
       
       toast({
         title: "Payment Successful!",
