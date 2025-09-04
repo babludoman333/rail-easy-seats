@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import vandeBharatHero from "@/assets/vande-bharat-hero.jpg";
+import trainsStationBg from "@/assets/trains-station-bg.jpg";
 
 interface Station {
   id: string;
@@ -41,12 +43,17 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative py-16 px-4 bg-gradient-to-r from-primary to-primary-hover">
-        <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
+      <section className="relative py-16 px-4 bg-gradient-to-r from-primary to-primary-hover overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+          style={{ backgroundImage: `url(${vandeBharatHero})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary-hover/80" />
+        <div className="container mx-auto text-center relative z-10">
+          <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-4 animate-fade-in">
             Smart Railway Booking
           </h1>
-          <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto animate-fade-in">
             Experience seamless train booking with interactive seat selection and real-time availability
           </p>
         </div>
@@ -55,7 +62,9 @@ const Index = () => {
       {/* Search Form */}
       <section className="py-12 px-4 -mt-8 relative z-10">
         <div className="container mx-auto">
-          <TrainSearchForm onSearch={setSearchResults} onSearchStart={() => setIsSearched(true)} />
+          <div className="animate-scale-in">
+            <TrainSearchForm onSearch={setSearchResults} onSearchStart={() => setIsSearched(true)} />
+          </div>
         </div>
       </section>
 
@@ -67,8 +76,8 @@ const Index = () => {
               {searchResults.length > 0 ? "Available Trains" : "No trains found"}
             </h2>
             <div className="space-y-4">
-              {searchResults.map((train) => (
-                <Card key={train.id} className="hover:shadow-md transition-shadow">
+              {searchResults.map((train, index) => (
+                <Card key={train.id} className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                   <CardContent className="p-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex-1">
@@ -121,7 +130,7 @@ const Index = () => {
                           </div>
                         </div>
                         <Link to="/booking" state={{ train }}>
-                          <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+                          <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-lg">
                             Book Now
                           </button>
                         </Link>

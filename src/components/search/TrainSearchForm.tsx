@@ -163,14 +163,14 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
 
           {/* Swap Button */}
           <div className="flex justify-center">
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-full p-2 h-10 w-10"
-              onClick={handleSwapStations}
-            >
-              <ArrowRightLeft className="h-4 w-4" />
-            </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-full p-2 h-10 w-10 hover:rotate-180 transition-transform duration-300"
+            onClick={handleSwapStations}
+          >
+            <ArrowRightLeft className="h-4 w-4" />
+          </Button>
           </div>
 
           {/* To Station */}
@@ -215,7 +215,7 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
             onCheckedChange={(checked) => setSearchData(prev => ({ ...prev, dateFlexible: !!checked }))}
           />
           <Label htmlFor="dateFlexible" className="text-sm">
-            Show trains regardless of availability (Date Flexible)
+            Flexible With Date
           </Label>
         </div>
 
@@ -224,7 +224,7 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
           <Button
             onClick={handleSearch}
             size="lg"
-            className="px-8 py-3 bg-gradient-to-r from-primary to-primary-hover hover:shadow-lg transition-all"
+            className="px-8 py-3 bg-gradient-to-r from-primary to-primary-hover hover:shadow-lg transition-all duration-300 hover:scale-105"
           >
             <Search className="h-5 w-5 mr-2" />
             Search Trains
