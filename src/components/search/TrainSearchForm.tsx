@@ -137,10 +137,10 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto shadow-lg">
+    <Card className="w-full max-w-4xl mx-auto shadow-lg hover:shadow-xl transition-all duration-300">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Find Your Train</CardTitle>
-        <p className="text-muted-foreground">Search and book railway tickets with ease</p>
+        <CardTitle className="text-2xl font-bold animate-fade-in">Find Your Train</CardTitle>
+        <p className="text-muted-foreground animate-fade-in">Search and book railway tickets with ease</p>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">

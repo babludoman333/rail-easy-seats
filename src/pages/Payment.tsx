@@ -48,19 +48,20 @@ const Payment = () => {
     e.preventDefault();
     setIsProcessing(true);
     
+    // Generate numeric PNR
+    const bookingId = Math.floor(Math.random() * 9000000000) + 1000000000; // 10-digit number
+    
     // Simulate payment processing
     setTimeout(() => {
-      const bookingId = Math.floor(Math.random() * 9000000000) + 1000000000; // 10-digit number
-      
       toast({
         title: "Payment Successful!",
-        description: `Your booking has been confirmed. Booking ID: ${bookingId}`,
+        description: `Your booking has been confirmed. PNR: ${bookingId}`,
       });
       
       navigate('/booking-confirmed', { 
         state: { 
           ...bookingData, 
-          bookingId,
+          bookingId: bookingId.toString(), // Ensure it's a string
           paymentMethod: paymentData.paymentMethod
         } 
       });
