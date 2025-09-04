@@ -238,8 +238,8 @@ const MyBookings = () => {
             </Card>
         ) : (
           <div className="space-y-6">
-            {bookings.map((booking) => (
-              <Card key={booking.id} className="overflow-hidden">
+            {bookings.map((booking, index) => (
+              <Card key={booking.id} className="overflow-hidden hover-lift animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                 <CardHeader className="bg-primary/5">
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
@@ -312,7 +312,7 @@ const MyBookings = () => {
                     <Button 
                       onClick={() => downloadTicket(booking)}
                       variant="outline" 
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 hover-lift"
                     >
                       <Download className="h-4 w-4" />
                       Download Ticket

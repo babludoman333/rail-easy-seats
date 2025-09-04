@@ -297,11 +297,11 @@ const BookingConfirmed = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button variant="outline" className="flex items-center gap-2" onClick={() => downloadTicket(bookingData)}>
+          <Button variant="outline" className="flex items-center gap-2 hover-lift" onClick={() => downloadTicket(bookingData)}>
             <Download className="h-4 w-4" />
             Download Ticket
           </Button>
-          <Button asChild>
+          <Button asChild className="hover-lift">
             <Link to="/" className="flex items-center gap-2">
               <Home className="h-4 w-4" />
               Back to Home
