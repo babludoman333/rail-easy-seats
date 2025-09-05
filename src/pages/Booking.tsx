@@ -29,7 +29,9 @@ const Booking = () => {
     setSelectedCoach(coach);
   };
   const [selectedClass, setSelectedClass] = useState("Sleeper");
-  const [journeyDate, setJourneyDate] = useState("");
+  const [journeyDate, setJourneyDate] = useState(
+    new Date().toISOString().split('T')[0]
+  );
   const [passengerData, setPassengerData] = useState({
     name: "",
     age: "",

@@ -8,6 +8,7 @@ import { Train, Calendar, MapPin, Users, Download, ArrowLeft, Home } from "lucid
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import jsPDF from 'jspdf';
+import trainLogo from '@/assets/train-logo.png';
 
 interface Booking {
   id: string;
@@ -95,102 +96,137 @@ const MyBookings = () => {
   const downloadTicket = (booking: Booking) => {
     const doc = new jsPDF();
     
-    // Professional header with background
+    // Professional header with gradient background
     doc.setFillColor(34, 85, 136);
-    doc.rect(0, 0, 210, 35, 'F');
+    doc.rect(0, 0, 210, 40, 'F');
     
-    doc.setFontSize(24);
+    // Company name and branding
+    doc.setFontSize(28);
     doc.setTextColor(255, 255, 255);
-    doc.text('RailEase', 20, 20);
-    doc.setFontSize(14);
-    doc.text('Electronic Railway Ticket', 20, 30);
+    doc.text('RailEase', 20, 22);
+    doc.setFontSize(12);
+    doc.text('Your Premium Railway Booking Partner', 20, 32);
     
-    // PNR Box
-    doc.setFillColor(240, 240, 240);
-    doc.rect(140, 5, 60, 25, 'F');
+    // Professional border
+    doc.setDrawColor(34, 85, 136);
+    doc.setLineWidth(2);
+    doc.rect(5, 5, 200, 287, 'S');
+    
+    // PNR Section with enhanced design
+    doc.setFillColor(245, 245, 245);
+    doc.rect(130, 8, 70, 30, 'F');
+    doc.setDrawColor(34, 85, 136);
+    doc.rect(130, 8, 70, 30, 'S');
+    
     doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    doc.text('PNR Number', 145, 15);
+    doc.setTextColor(34, 85, 136);
+    doc.text('PNR NUMBER', 135, 18);
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text(booking.booking_id.toString(), 135, 30);
+    doc.setFont('helvetica', 'normal');
+    
+    // Status badge
+    doc.setFillColor(34, 139, 34);
+    doc.rect(135, 42, 25, 8, 'F');
+    doc.setFontSize(8);
+    doc.setTextColor(255, 255, 255);
+    doc.text('CONFIRMED', 137, 48);
+    
+    // Journey Details Section with icon-style headers
     doc.setFontSize(16);
     doc.setTextColor(34, 85, 136);
-    doc.text(booking.booking_id.toString(), 145, 25);
+    doc.text('🚂 Journey Details', 20, 60);
     
-    // Journey Details Section
-    doc.setFontSize(14);
-    doc.setTextColor(34, 85, 136);
-    doc.text('Journey Details', 20, 50);
-    
-    // Draw line under section
+    // Decorative line
     doc.setDrawColor(34, 85, 136);
-    doc.line(20, 52, 190, 52);
+    doc.setLineWidth(1);
+    doc.line(20, 63, 190, 63);
     
-    doc.setFontSize(11);
-    doc.setTextColor(0, 0, 0);
-    
-    // Two column layout for journey details
-    doc.text(`Train: ${booking.trains?.name || 'Unknown'}`, 20, 65);
-    doc.text(`Train Number: ${booking.trains?.number || 'N/A'}`, 110, 65);
-    
-    doc.text(`From: ${booking.trains?.stations_from?.name || 'Unknown'}`, 20, 75);
-    doc.text(`To: ${booking.trains?.stations_to?.name || 'Unknown'}`, 110, 75);
-    
-    doc.text(`Departure: ${booking.trains?.departure_time || 'N/A'}`, 20, 85);
-    doc.text(`Arrival: ${booking.trains?.arrival_time || 'N/A'}`, 110, 85);
-    
-    doc.text(`Journey Date: ${new Date(booking.journey_date).toLocaleDateString('en-IN')}`, 20, 95);
-    
-    // Passenger & Seat Details Section
-    doc.setFontSize(14);
-    doc.setTextColor(34, 85, 136);
-    doc.text('Passenger & Seat Details', 20, 115);
-    doc.line(20, 117, 190, 117);
-    
-    doc.setFontSize(11);
-    doc.setTextColor(0, 0, 0);
-    
-    doc.text(`Passenger Name: ${booking.passenger_name}`, 20, 130);
-    doc.text(`Age: ${booking.passenger_age}`, 110, 130);
-    
-    doc.text(`Gender: ${booking.passenger_gender}`, 20, 140);
-    doc.text(`Class: ${booking.class}`, 110, 140);
-    
-    doc.text(`Coach: ${booking.coach}`, 20, 150);
-    doc.text(`Seat(s): ${booking.seat_numbers.join(', ')}`, 110, 150);
-    
-    // Payment Details Section
+    // Journey info in card style
     doc.setFillColor(250, 250, 250);
-    doc.rect(15, 165, 180, 25, 'F');
-    
-    doc.setFontSize(14);
-    doc.setTextColor(34, 85, 136);
-    doc.text('Payment Details', 20, 180);
+    doc.rect(15, 70, 180, 35, 'F');
+    doc.setDrawColor(220, 220, 220);
+    doc.rect(15, 70, 180, 35, 'S');
     
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
-    doc.text(`Total Amount: ₹${booking.total_amount}`, 20, 185);
-    doc.text(`Status: ${booking.status.toUpperCase()}`, 110, 185);
+    doc.text(`🚆 Train: ${booking.trains?.name || 'Unknown'} (${booking.trains?.number || 'N/A'})`, 20, 80);
+    doc.text(`📍 Route: ${booking.trains?.stations_from?.name || 'Unknown'} → ${booking.trains?.stations_to?.name || 'Unknown'}`, 20, 90);
+    doc.text(`🕐 Departure: ${booking.trains?.departure_time || 'N/A'} | Arrival: ${booking.trains?.arrival_time || 'N/A'}`, 20, 100);
     
-    // Important Instructions
+    // Passenger Details Section
+    doc.setFontSize(16);
+    doc.setTextColor(34, 85, 136);
+    doc.text('👤 Passenger & Seat Information', 20, 125);
+    doc.line(20, 128, 190, 128);
+    
+    // Passenger card
+    doc.setFillColor(248, 249, 250);
+    doc.rect(15, 135, 180, 40, 'F');
+    doc.setDrawColor(220, 220, 220);
+    doc.rect(15, 135, 180, 40, 'S');
+    
     doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Name: ${booking.passenger_name}`, 20, 145);
+    doc.text(`Age: ${booking.passenger_age} years`, 110, 145);
+    doc.text(`Gender: ${booking.passenger_gender}`, 20, 155);
+    doc.text(`Class: ${booking.class}`, 110, 155);
+    doc.text(`Coach: ${booking.coach}`, 20, 165);
+    doc.text(`Seat(s): ${booking.seat_numbers.join(', ')}`, 110, 165);
+    
+    // Journey Date highlight
+    doc.setFillColor(255, 235, 59);
+    doc.rect(15, 180, 180, 15, 'F');
+    doc.setFontSize(14);
+    doc.setTextColor(68, 68, 68);
+    doc.text(`📅 Journey Date: ${new Date(booking.journey_date).toLocaleDateString('en-IN')}`, 20, 190);
+    
+    // Payment Section
+    doc.setFillColor(232, 245, 233);
+    doc.rect(15, 200, 180, 25, 'F');
+    doc.setDrawColor(76, 175, 80);
+    doc.rect(15, 200, 180, 25, 'S');
+    
+    doc.setFontSize(14);
+    doc.setTextColor(34, 85, 136);
+    doc.text('💳 Payment Information', 20, 215);
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Amount Paid: ₹${booking.total_amount}`, 20, 220);
+    doc.text(`Status: ${booking.status.toUpperCase()}`, 110, 220);
+    
+    // QR Code placeholder
+    doc.setFillColor(240, 240, 240);
+    doc.rect(160, 230, 30, 30, 'F');
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(160, 230, 30, 30, 'S');
+    doc.setFontSize(8);
+    doc.setTextColor(120, 120, 120);
+    doc.text('QR Code', 170, 248);
+    
+    // Important Instructions with icons
+    doc.setFontSize(14);
     doc.setTextColor(220, 38, 127);
-    doc.text('Important Instructions:', 20, 210);
+    doc.text('⚠️ Important Travel Instructions', 20, 235);
     
     doc.setFontSize(9);
-    doc.setTextColor(0, 0, 0);
-    doc.text('• Please carry a valid photo ID proof during your journey', 20, 220);
-    doc.text('• Report at the station at least 30 minutes before departure', 20, 228);
-    doc.text('• This is a computer-generated ticket and does not require signature', 20, 236);
-    doc.text('• For any queries, contact RailEase customer support', 20, 244);
+    doc.setTextColor(68, 68, 68);
+    doc.text('📋 Please carry original photo ID proof (Aadhaar, PAN, Passport, Driving License)', 20, 245);
+    doc.text('🕐 Arrive at station 30 minutes before departure time', 20, 252);
+    doc.text('🎫 This e-ticket is valid for travel without printout', 20, 259);
+    doc.text('📞 Customer Care: 139 (24x7) | Emergency: 112', 20, 266);
     
-    // Footer
+    // Professional footer
     doc.setFillColor(34, 85, 136);
-    doc.rect(0, 270, 210, 27, 'F');
+    doc.rect(0, 275, 210, 22, 'F');
     
     doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text('Generated by RailEase - Your Trusted Railway Booking Partner', 20, 285);
+    doc.text('🚆 RailEase - Connecting India, One Journey at a Time', 20, 287);
     doc.setFontSize(8);
-    doc.text(`Generated on: ${new Date().toLocaleString('en-IN')}`, 20, 290);
+    doc.text(`Generated: ${new Date().toLocaleString('en-IN')} | This is a computer-generated document`, 20, 292);
     
     doc.save(`RailEase-Ticket-${booking.booking_id}.pdf`);
     
@@ -213,7 +249,7 @@ const MyBookings = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Back to Home Button */}
         <div className="mb-6">
-          <Button variant="ghost" onClick={() => navigate('/')} className="text-sm">
+          <Button variant="ghost" onClick={() => navigate('/')} className="text-sm hover:scale-105 transition-transform duration-200">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Home
           </Button>

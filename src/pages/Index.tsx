@@ -8,6 +8,9 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import vandeBharatHero from "@/assets/vande-bharat-hero.jpg";
 import trainsStationBg from "@/assets/trains-station-bg.jpg";
+import trainImage1 from "@/assets/train-image-1.jpg";
+import trainImage2 from "@/assets/train-image-2.jpg";
+import trainImage3 from "@/assets/train-image-3.jpg";
 
 interface Station {
   id: string;
@@ -37,6 +40,19 @@ interface Train {
 const Index = () => {
   const [searchResults, setSearchResults] = useState<Train[]>([]);
   const [isSearched, setIsSearched] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  const rotatingImages = [trainImage1, trainImage2, trainImage3, vandeBharatHero];
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        (prevIndex + 1) % rotatingImages.length
+      );
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,8 +61,8 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative py-16 px-4 bg-gradient-to-r from-primary to-primary-hover overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{ backgroundImage: `url(${vandeBharatHero})` }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 transition-all duration-1000"
+          style={{ backgroundImage: `url(${rotatingImages[currentImageIndex]})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary-hover/80" />
         <div className="container mx-auto text-center relative z-10">
