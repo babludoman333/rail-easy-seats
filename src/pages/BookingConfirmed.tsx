@@ -204,10 +204,10 @@ const BookingConfirmed = () => {
     <div className="min-h-screen bg-background px-4 py-8">
       <div className="container mx-auto max-w-2xl">
         {/* Success Header */}
-        <div className="text-center mb-8">
-          <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold mb-2">Booking Confirmed!</h1>
-          <p className="text-muted-foreground">
+        <div className="text-center mb-8 animate-fade-in">
+          <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4 animate-scale-in" />
+          <h1 className="text-3xl font-bold mb-2 animate-fade-in">Booking Confirmed!</h1>
+          <p className="text-muted-foreground animate-fade-in">
             Your train ticket has been booked successfully
           </p>
         </div>

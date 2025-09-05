@@ -48,11 +48,13 @@ const Payment = () => {
     e.preventDefault();
     setIsProcessing(true);
     
-    // Generate numeric PNR
-    const bookingId = Math.floor(Math.random() * 9000000000) + 1000000000; // 10-digit number
-    
-    // Simulate payment processing
-    setTimeout(() => {
+    try {
+      // Generate numeric PNR
+      const bookingId = Math.floor(Math.random() * 9000000000) + 1000000000; // 10-digit number
+      
+      // Simulate payment processing delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       toast({
         title: "Payment Successful!",
         description: `Your booking has been confirmed. PNR: ${bookingId}`,
@@ -65,8 +67,15 @@ const Payment = () => {
           paymentMethod: paymentData.paymentMethod
         } 
       });
+    } catch (error) {
+      toast({
+        title: "Payment Failed",
+        description: "There was an error processing your payment. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
       setIsProcessing(false);
-    }, 2000);
+    }
   };
 
   return (
