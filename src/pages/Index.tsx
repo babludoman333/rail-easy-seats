@@ -61,7 +61,7 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative py-16 px-4 bg-gradient-to-r from-primary to-primary-hover overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 transition-all duration-1000"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 transition-all duration-1000"
           style={{ backgroundImage: `url(${rotatingImages[currentImageIndex]})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary-hover/80" />
