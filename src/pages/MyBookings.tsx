@@ -96,143 +96,171 @@ const MyBookings = () => {
   const downloadTicket = (booking: Booking) => {
     const doc = new jsPDF();
     
-    // Professional header with gradient background
-    doc.setFillColor(34, 85, 136);
-    doc.rect(0, 0, 210, 40, 'F');
+    // Clean professional header
+    doc.setFillColor(29, 78, 216);
+    doc.rect(0, 0, 210, 45, 'F');
     
-    // Company name and branding
+    // Company branding
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(28);
     doc.setTextColor(255, 255, 255);
-    doc.text('RailEase', 20, 22);
+    doc.text('RailEase', 20, 25);
+    
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(12);
-    doc.text('Your Premium Railway Booking Partner', 20, 32);
+    doc.text('Premium Railway Booking Solution', 20, 35);
     
-    // Professional border
-    doc.setDrawColor(34, 85, 136);
-    doc.setLineWidth(2);
-    doc.rect(5, 5, 200, 287, 'S');
+    // Clean border
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(1);
+    doc.rect(10, 10, 190, 277, 'S');
     
-    // PNR Section with enhanced design
-    doc.setFillColor(245, 245, 245);
-    doc.rect(130, 8, 70, 30, 'F');
-    doc.setDrawColor(34, 85, 136);
-    doc.rect(130, 8, 70, 30, 'S');
+    // PNR Section
+    doc.setFillColor(248, 250, 252);
+    doc.rect(125, 15, 70, 25, 'F');
+    doc.setDrawColor(203, 213, 225);
+    doc.rect(125, 15, 70, 25, 'S');
     
-    doc.setFontSize(10);
-    doc.setTextColor(34, 85, 136);
-    doc.text('PNR NUMBER', 135, 18);
-    doc.setFontSize(18);
+    doc.setFontSize(9);
+    doc.setTextColor(71, 85, 105);
+    doc.text('PNR NUMBER', 130, 23);
+    doc.setFontSize(16);
+    doc.setTextColor(15, 23, 42);
     doc.setFont('helvetica', 'bold');
-    doc.text(booking.booking_id.toString(), 135, 30);
+    doc.text(booking.booking_id.toString(), 130, 35);
     doc.setFont('helvetica', 'normal');
     
     // Status badge
-    doc.setFillColor(34, 139, 34);
-    doc.rect(135, 42, 25, 8, 'F');
+    doc.setFillColor(34, 197, 94);
+    doc.rect(130, 43, 30, 10, 'F');
     doc.setFontSize(8);
     doc.setTextColor(255, 255, 255);
-    doc.text('CONFIRMED', 137, 48);
+    doc.setFont('helvetica', 'bold');
+    doc.text('CONFIRMED', 134, 50);
+    doc.setFont('helvetica', 'normal');
     
-    // Journey Details Section with icon-style headers
+    // Journey Details Header
     doc.setFontSize(16);
-    doc.setTextColor(34, 85, 136);
-    doc.text('🚂 Journey Details', 20, 60);
+    doc.setTextColor(29, 78, 216);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Journey Details', 20, 70);
+    doc.setFont('helvetica', 'normal');
     
-    // Decorative line
-    doc.setDrawColor(34, 85, 136);
-    doc.setLineWidth(1);
-    doc.line(20, 63, 190, 63);
+    // Separator line
+    doc.setDrawColor(203, 213, 225);
+    doc.setLineWidth(0.5);
+    doc.line(20, 74, 190, 74);
     
-    // Journey info in card style
-    doc.setFillColor(250, 250, 250);
-    doc.rect(15, 70, 180, 35, 'F');
-    doc.setDrawColor(220, 220, 220);
-    doc.rect(15, 70, 180, 35, 'S');
+    // Journey information card
+    doc.setFillColor(249, 250, 251);
+    doc.rect(15, 80, 180, 40, 'F');
+    doc.setDrawColor(229, 231, 235);
+    doc.rect(15, 80, 180, 40, 'S');
     
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`🚆 Train: ${booking.trains?.name || 'Unknown'} (${booking.trains?.number || 'N/A'})`, 20, 80);
-    doc.text(`📍 Route: ${booking.trains?.stations_from?.name || 'Unknown'} → ${booking.trains?.stations_to?.name || 'Unknown'}`, 20, 90);
-    doc.text(`🕐 Departure: ${booking.trains?.departure_time || 'N/A'} | Arrival: ${booking.trains?.arrival_time || 'N/A'}`, 20, 100);
+    doc.setFontSize(11);
+    doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Train: ${booking.trains?.name || 'Unknown'}`, 20, 90);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Number: ${booking.trains?.number || 'N/A'}`, 140, 90);
     
-    // Passenger Details Section
+    doc.text(`From: ${booking.trains?.stations_from?.name || 'Unknown'}`, 20, 100);
+    doc.text(`To: ${booking.trains?.stations_to?.name || 'Unknown'}`, 20, 110);
+    
+    doc.text(`Departure: ${booking.trains?.departure_time || 'N/A'}`, 140, 100);
+    doc.text(`Arrival: ${booking.trains?.arrival_time || 'N/A'}`, 140, 110);
+    
+    // Passenger Information Header
     doc.setFontSize(16);
-    doc.setTextColor(34, 85, 136);
-    doc.text('👤 Passenger & Seat Information', 20, 125);
-    doc.line(20, 128, 190, 128);
+    doc.setTextColor(29, 78, 216);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Passenger Information', 20, 140);
+    doc.setFont('helvetica', 'normal');
     
-    // Passenger card
-    doc.setFillColor(248, 249, 250);
-    doc.rect(15, 135, 180, 40, 'F');
-    doc.setDrawColor(220, 220, 220);
-    doc.rect(15, 135, 180, 40, 'S');
+    doc.setDrawColor(203, 213, 225);
+    doc.line(20, 144, 190, 144);
     
+    // Passenger details card
+    doc.setFillColor(254, 249, 195);
+    doc.rect(15, 150, 180, 35, 'F');
+    doc.setDrawColor(251, 191, 36);
+    doc.rect(15, 150, 180, 35, 'S');
+    
+    doc.setFontSize(11);
+    doc.setTextColor(15, 23, 42);
+    doc.text(`Name: ${booking.passenger_name}`, 20, 160);
+    doc.text(`Age: ${booking.passenger_age} years`, 120, 160);
+    doc.text(`Gender: ${booking.passenger_gender}`, 20, 170);
+    doc.text(`Class: ${booking.class}`, 120, 170);
+    doc.text(`Coach: ${booking.coach}`, 20, 180);
+    doc.text(`Seat(s): ${booking.seat_numbers.join(', ')}`, 120, 180);
+    
+    // Journey Date - Highlighted
+    doc.setFillColor(219, 234, 254);
+    doc.rect(15, 190, 180, 15, 'F');
+    doc.setDrawColor(59, 130, 246);
+    doc.rect(15, 190, 180, 15, 'S');
     doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Name: ${booking.passenger_name}`, 20, 145);
-    doc.text(`Age: ${booking.passenger_age} years`, 110, 145);
-    doc.text(`Gender: ${booking.passenger_gender}`, 20, 155);
-    doc.text(`Class: ${booking.class}`, 110, 155);
-    doc.text(`Coach: ${booking.coach}`, 20, 165);
-    doc.text(`Seat(s): ${booking.seat_numbers.join(', ')}`, 110, 165);
+    doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Journey Date: ${new Date(booking.journey_date).toLocaleDateString('en-IN', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    })}`, 20, 200);
+    doc.setFont('helvetica', 'normal');
     
-    // Journey Date highlight
-    doc.setFillColor(255, 235, 59);
-    doc.rect(15, 180, 180, 15, 'F');
-    doc.setFontSize(14);
-    doc.setTextColor(68, 68, 68);
-    doc.text(`📅 Journey Date: ${new Date(booking.journey_date).toLocaleDateString('en-IN')}`, 20, 190);
-    
-    // Payment Section
-    doc.setFillColor(232, 245, 233);
-    doc.rect(15, 200, 180, 25, 'F');
-    doc.setDrawColor(76, 175, 80);
-    doc.rect(15, 200, 180, 25, 'S');
+    // Payment Information
+    doc.setFillColor(220, 252, 231);
+    doc.rect(15, 210, 120, 20, 'F');
+    doc.setDrawColor(34, 197, 94);
+    doc.rect(15, 210, 120, 20, 'S');
     
     doc.setFontSize(14);
-    doc.setTextColor(34, 85, 136);
-    doc.text('💳 Payment Information', 20, 215);
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Amount Paid: ₹${booking.total_amount}`, 20, 220);
-    doc.text(`Status: ${booking.status.toUpperCase()}`, 110, 220);
+    doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Payment Details', 20, 220);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.text(`Amount Paid: ₹${booking.total_amount?.toLocaleString() || '0'}`, 20, 227);
     
-    // QR Code placeholder
-    doc.setFillColor(240, 240, 240);
-    doc.rect(160, 230, 30, 30, 'F');
-    doc.setDrawColor(200, 200, 200);
-    doc.rect(160, 230, 30, 30, 'S');
+    // QR code placeholder
+    doc.setFillColor(243, 244, 246);
+    doc.rect(145, 210, 40, 40, 'F');
+    doc.setDrawColor(156, 163, 175);
+    doc.rect(145, 210, 40, 40, 'S');
     doc.setFontSize(8);
-    doc.setTextColor(120, 120, 120);
-    doc.text('QR Code', 170, 248);
+    doc.setTextColor(107, 114, 128);
+    doc.text('Digital QR Code', 155, 230);
+    doc.text('Scan for Details', 157, 237);
     
-    // Important Instructions with icons
+    // Important Instructions
     doc.setFontSize(14);
     doc.setTextColor(220, 38, 127);
-    doc.text('⚠️ Important Travel Instructions', 20, 235);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Travel Instructions', 20, 265);
+    doc.setFont('helvetica', 'normal');
     
     doc.setFontSize(9);
-    doc.setTextColor(68, 68, 68);
-    doc.text('📋 Please carry original photo ID proof (Aadhaar, PAN, Passport, Driving License)', 20, 245);
-    doc.text('🕐 Arrive at station 30 minutes before departure time', 20, 252);
-    doc.text('🎫 This e-ticket is valid for travel without printout', 20, 259);
-    doc.text('📞 Customer Care: 139 (24x7) | Emergency: 112', 20, 266);
+    doc.setTextColor(55, 65, 81);
+    doc.text('• Carry valid photo ID (Aadhaar/PAN/Passport/DL) during travel', 20, 272);
+    doc.text('• Arrive 30 minutes before departure • Valid for travel without print', 20, 278);
     
-    // Professional footer
-    doc.setFillColor(34, 85, 136);
-    doc.rect(0, 275, 210, 22, 'F');
+    // Clean footer
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 287, 210, 10, 'F');
     
-    doc.setFontSize(10);
-    doc.setTextColor(255, 255, 255);
-    doc.text('🚆 RailEase - Connecting India, One Journey at a Time', 20, 287);
     doc.setFontSize(8);
-    doc.text(`Generated: ${new Date().toLocaleString('en-IN')} | This is a computer-generated document`, 20, 292);
+    doc.setTextColor(255, 255, 255);
+    doc.text('RailEase - Your Trusted Travel Partner', 20, 294);
+    doc.text(`Generated: ${new Date().toLocaleString('en-IN')}`, 130, 294);
     
     doc.save(`RailEase-Ticket-${booking.booking_id}.pdf`);
     
     toast({
       title: "Success",
-      description: "Professional ticket downloaded successfully"
+      description: "Professional ticket downloaded successfully!"
     });
   };
 
