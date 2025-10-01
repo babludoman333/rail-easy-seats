@@ -75,9 +75,13 @@ const Booking = () => {
   const getClassCode = (className: string) => {
     const classMap: Record<string, string> = {
       'AC First Class': '1A',
+      'AC 1 Tier': '1A',
       'AC Two-Tier': '2A', 
+      'AC 2 Tier': '2A',
       'AC Three-Tier': '3A',
+      'AC 3 Tier': '3A',
       'AC Three-Tier Economy': '3E',
+      'AC 3 Tier Economy': '3E',
       'Sleeper': 'SL',
       'Chair Car': 'CC',
       'Executive Chair Car': 'EC',

@@ -24,17 +24,15 @@ const Header = () => {
             <span className="text-2xl font-bold text-primary">RailEase</span>
           </Link>
 
-          {/* Navigation - only show when not logged in */}
-          {!user && (
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link to="/" className="text-foreground hover:text-primary transition-colors">
-                Book Tickets
-              </Link>
-              <Link to="/contact" className="text-foreground hover:text-primary transition-colors">
-                Contact
-              </Link>
-            </nav>
-          )}
+          {/* Navigation - center buttons */}
+          <nav className="hidden md:flex items-center space-x-6">
+            <Link to="/contact" className="text-foreground hover:text-primary transition-colors">
+              Contact
+            </Link>
+            <Link to="/pnr-status" className="text-foreground hover:text-primary transition-colors">
+              PNR Status
+            </Link>
+          </nav>
 
           {/* User Actions */}
           <div className="flex items-center space-x-3">
@@ -60,12 +58,6 @@ const Header = () => {
                     <Link to="/bookings" className="flex items-center space-x-2 w-full">
                       <Menu className="h-4 w-4" />
                       <span>My Bookings</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/contact" className="flex items-center space-x-2 w-full">
-                      <User className="h-4 w-4" />
-                      <span>Contact</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={signOut} className="flex items-center space-x-2">
