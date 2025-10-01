@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -85,7 +85,19 @@ export function ChatSupport() {
       {isOpen && (
         <Card className="fixed bottom-6 right-6 w-96 h-[600px] shadow-2xl z-50 flex flex-col">
           <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
-            <h3 className="font-semibold">RailEase Support</h3>
+            <div className="flex items-center gap-2">
+              {messages.length > 0 && (
+                <Button
+                  onClick={() => setMessages([])}
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-primary-foreground hover:bg-primary/90"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+              )}
+              <h3 className="font-semibold">RailEase Support</h3>
+            </div>
             <Button
               onClick={() => setIsOpen(false)}
               variant="ghost"
