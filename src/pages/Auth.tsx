@@ -24,8 +24,12 @@ const Auth = () => {
 
   const [resetEmail, setResetEmail] = useState("");
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [newPasswordData, setNewPasswordData] = useState({
+    password: "",
+    confirmPassword: ""
+  });
 
-  const { signIn, signUp, resetPassword, user } = useAuth();
+  const { signIn, signUp, resetPassword, updatePassword, user, isPasswordRecovery } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,6 +63,84 @@ const Auth = () => {
       setResetEmail("");
     }
   };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPasswordData.password !== newPasswordData.confirmPassword) {
+      return;
+    }
+    
+    const { error } = await updatePassword(newPasswordData.password);
+    if (!error) {
+      navigate('/');
+    }
+  };
+
+  // Show password update form if in recovery mode
+  if (isPasswordRecovery) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="w-full max-w-md">
+          <div className="flex justify-center mb-8">
+            <Link to="/" className="flex items-center space-x-2">
+              <div className="p-3 bg-gradient-to-r from-primary to-primary/80 rounded-lg">
+                <Train className="h-8 w-8 text-primary-foreground" />
+              </div>
+              <span className="text-3xl font-bold text-primary">RailEase</span>
+            </Link>
+          </div>
+
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">Set New Password</CardTitle>
+              <CardDescription>
+                Enter your new password below
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleUpdatePassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">New Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="new-password"
+                      type="password"
+                      placeholder="Enter your new password"
+                      className="pl-10"
+                      value={newPasswordData.password}
+                      onChange={(e) => setNewPasswordData(prev => ({ ...prev, password: e.target.value }))}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-new-password">Confirm New Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="confirm-new-password"
+                      type="password"
+                      placeholder="Confirm your new password"
+                      className="pl-10"
+                      value={newPasswordData.confirmPassword}
+                      onChange={(e) => setNewPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <Button type="submit" className="w-full">
+                  Update Password
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
