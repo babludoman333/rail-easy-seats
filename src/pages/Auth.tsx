@@ -33,10 +33,10 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
+    if (user && !isPasswordRecovery) {
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, isPasswordRecovery, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
