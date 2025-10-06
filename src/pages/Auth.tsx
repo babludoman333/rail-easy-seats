@@ -33,6 +33,7 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('Auth page - isPasswordRecovery:', isPasswordRecovery, 'user:', user);
     if (user && !isPasswordRecovery) {
       navigate('/');
     }
