@@ -4,6 +4,7 @@ import TrainSearchForm from "@/components/search/TrainSearchForm";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Users, Shield, Zap, Calendar, CreditCard } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import vandeBharatHero from "@/assets/vande-bharat-hero.jpg";
@@ -86,14 +87,103 @@ const Index = () => {
 
       {/* Features Section - Show when no search is performed */}
       {!isSearched && (
-        <section className="py-16 px-4 bg-gradient-to-b from-background to-muted/20">
-          <div className="container mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Our Platform?</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Experience the future of railway booking with advanced features designed for your convenience
-              </p>
+        <>
+          {/* Train Gallery Carousel */}
+          <section className="py-16 px-4 bg-muted/30">
+            <div className="container mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Experience Indian Railways</h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  From heritage trains to modern high-speed rail, discover the beauty of train travel
+                </p>
+              </div>
+              
+              <Carousel className="w-full max-w-5xl mx-auto">
+                <CarouselContent>
+                  <CarouselItem>
+                    <div className="p-1">
+                      <Card className="border-0 shadow-2xl overflow-hidden">
+                        <CardContent className="p-0">
+                          <img 
+                            src={vandeBharatHero} 
+                            alt="Vande Bharat Express - India's semi-high speed train" 
+                            className="w-full h-[400px] object-cover"
+                          />
+                          <div className="p-6 bg-gradient-to-t from-background to-transparent">
+                            <h3 className="text-2xl font-bold mb-2">Vande Bharat Express</h3>
+                            <p className="text-muted-foreground">Experience India's fastest semi-high speed train with world-class amenities</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                  <CarouselItem>
+                    <div className="p-1">
+                      <Card className="border-0 shadow-2xl overflow-hidden">
+                        <CardContent className="p-0">
+                          <img 
+                            src={trainImage1} 
+                            alt="Modern railway station with trains" 
+                            className="w-full h-[400px] object-cover"
+                          />
+                          <div className="p-6 bg-gradient-to-t from-background to-transparent">
+                            <h3 className="text-2xl font-bold mb-2">Modern Infrastructure</h3>
+                            <p className="text-muted-foreground">State-of-the-art stations and facilities for a comfortable journey</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                  <CarouselItem>
+                    <div className="p-1">
+                      <Card className="border-0 shadow-2xl overflow-hidden">
+                        <CardContent className="p-0">
+                          <img 
+                            src={trainImage2} 
+                            alt="Scenic train journey through landscapes" 
+                            className="w-full h-[400px] object-cover"
+                          />
+                          <div className="p-6 bg-gradient-to-t from-background to-transparent">
+                            <h3 className="text-2xl font-bold mb-2">Scenic Routes</h3>
+                            <p className="text-muted-foreground">Travel through breathtaking landscapes across India</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                  <CarouselItem>
+                    <div className="p-1">
+                      <Card className="border-0 shadow-2xl overflow-hidden">
+                        <CardContent className="p-0">
+                          <img 
+                            src={trainImage3} 
+                            alt="Comfortable train interiors" 
+                            className="w-full h-[400px] object-cover"
+                          />
+                          <div className="p-6 bg-gradient-to-t from-background to-transparent">
+                            <h3 className="text-2xl font-bold mb-2">Premium Comfort</h3>
+                            <p className="text-muted-foreground">Luxurious interiors designed for your comfort and convenience</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
             </div>
+          </section>
+
+          {/* Features Section */}
+          <section className="py-16 px-4 bg-gradient-to-b from-background to-muted/20">
+            <div className="container mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Our Platform?</h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  Experience the future of railway booking with advanced features designed for your convenience
+                </p>
+              </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -146,6 +236,7 @@ const Index = () => {
             </div>
           </div>
         </section>
+        </>
       )}
 
       {/* Search Results */}
