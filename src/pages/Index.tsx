@@ -3,7 +3,7 @@ import Header from "@/components/layout/Header";
 import TrainSearchForm from "@/components/search/TrainSearchForm";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, MapPin, Users } from "lucide-react";
+import { Clock, MapPin, Users, Shield, Zap, Calendar, CreditCard } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import vandeBharatHero from "@/assets/vande-bharat-hero.jpg";
@@ -84,16 +84,87 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Features Section - Show when no search is performed */}
+      {!isSearched && (
+        <section className="py-16 px-4 bg-gradient-to-b from-background to-muted/20">
+          <div className="container mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Our Platform?</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Experience the future of railway booking with advanced features designed for your convenience
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Zap className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold mb-2">Instant Booking</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Book your tickets in seconds with our streamlined process
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MapPin className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold mb-2">Interactive Seat Selection</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Choose your preferred seat with our visual seat map
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Shield className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold mb-2">Secure Payments</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Your transactions are protected with bank-grade security
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Calendar className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold mb-2">Real-time Updates</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Get instant notifications about your booking status
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Search Results */}
       {isSearched && (
-        <section className="py-8 px-4">
+        <section className="py-8 px-4 bg-gradient-to-b from-background to-muted/20">
           <div className="container mx-auto">
-            <h2 className="text-2xl font-bold mb-6">
-              {searchResults.length > 0 ? "Available Trains" : "No trains found"}
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">
+                {searchResults.length > 0 ? "Available Trains" : "No trains found"}
+              </h2>
+              {searchResults.length > 0 && (
+                <p className="text-sm text-muted-foreground">
+                  {searchResults.length} train{searchResults.length !== 1 ? 's' : ''} available
+                </p>
+              )}
+            </div>
             <div className="space-y-4">
               {searchResults.map((train, index) => (
-                <Card key={train.id} className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                <Card key={train.id} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                   <CardContent className="p-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex-1">
