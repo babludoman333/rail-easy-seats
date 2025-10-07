@@ -137,13 +137,15 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto shadow-lg hover:shadow-xl transition-all duration-300">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold animate-fade-in">Find Your Train</CardTitle>
-        <p className="text-muted-foreground animate-fade-in">Search and book railway tickets with ease</p>
+    <Card className="w-full max-w-4xl mx-auto shadow-2xl hover:shadow-3xl transition-all duration-300 border-2">
+      <CardHeader className="text-center pb-8 pt-8 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5">
+        <CardTitle className="text-4xl md:text-5xl font-bold animate-fade-in bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent mb-3">
+          Find Your Train
+        </CardTitle>
+        <p className="text-lg text-muted-foreground animate-fade-in">Search and book railway tickets with ease</p>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_1fr] gap-4 items-end">
           {/* From Station */}
           <div className="space-y-2">
             <Label htmlFor="from" className="text-sm font-medium">From</Label>
@@ -162,15 +164,15 @@ const TrainSearchForm = ({ onSearch, onSearchStart }: TrainSearchFormProps) => {
           </div>
 
           {/* Swap Button */}
-          <div className="flex justify-center">
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-full p-2 h-10 w-10 hover:rotate-180 transition-transform duration-300"
-            onClick={handleSwapStations}
-          >
-            <ArrowRightLeft className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center justify-center pb-1">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full p-2 h-10 w-10 hover:rotate-180 transition-transform duration-300"
+              onClick={handleSwapStations}
+            >
+              <ArrowRightLeft className="h-4 w-4" />
+            </Button>
           </div>
 
           {/* To Station */}
