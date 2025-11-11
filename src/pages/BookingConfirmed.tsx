@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import jsPDF from 'jspdf';
+import QRCode from 'qrcode';
 import trainLogo from '@/assets/train-logo.png';
 
 const BookingConfirmed = () => {
@@ -78,11 +79,49 @@ const BookingConfirmed = () => {
     }
   };
 
-  const downloadTicket = (booking: any) => {
+  const downloadTicket = async (booking: any) => {
     const doc = new jsPDF();
     
+    // Prepare QR code data with journey details
+    const qrData = JSON.stringify({
+      pnr: booking.bookingId,
+      train: {
+        name: booking.train?.name,
+        number: booking.train?.number
+      },
+      passenger: {
+        name: booking.passenger.name,
+        age: booking.passenger.age,
+        gender: booking.passenger.gender
+      },
+      journey: {
+        from: booking.train?.from_station?.name,
+        to: booking.train?.to_station?.name,
+        date: booking.journeyDate,
+        departure: booking.train?.departure_time,
+        arrival: booking.train?.arrival_time
+      },
+      seat: {
+        coach: booking.selectedCoach,
+        class: booking.selectedClass || 'Sleeper',
+        numbers: booking.selectedSeats
+      },
+      amount: booking.totalAmount,
+      status: 'confirmed'
+    });
+
+    // Generate QR code
+    const qrCodeDataUrl = await QRCode.toDataURL(qrData, {
+      width: 150,
+      margin: 1,
+      color: {
+        dark: '#000000',
+        light: '#FFFFFF'
+      }
+    });
+    
     // Clean professional header
-    doc.setFillColor(29, 78, 216); // Professional blue
+    doc.setFillColor(29, 78, 216);
     doc.rect(0, 0, 210, 45, 'F');
     
     // Company branding with better contrast
@@ -210,15 +249,14 @@ const BookingConfirmed = () => {
     doc.setFontSize(11);
     doc.text(`Amount Paid: ₹${booking.totalAmount?.toLocaleString() || '0'}`, 20, 227);
     
-    // QR code placeholder
-    doc.setFillColor(243, 244, 246);
-    doc.rect(145, 210, 40, 40, 'F');
+    // Add QR code with border
     doc.setDrawColor(156, 163, 175);
+    doc.setLineWidth(1);
     doc.rect(145, 210, 40, 40, 'S');
-    doc.setFontSize(8);
+    doc.addImage(qrCodeDataUrl, 'PNG', 147, 212, 36, 36);
+    doc.setFontSize(7);
     doc.setTextColor(107, 114, 128);
-    doc.text('Digital QR Code', 155, 230);
-    doc.text('Scan for Details', 157, 237);
+    doc.text('Scan for Details', 153, 253);
     
     // Important Instructions
     doc.setFontSize(14);
