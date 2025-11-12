@@ -35,6 +35,18 @@ const Auth = () => {
 
   useEffect(() => {
     console.log('Auth page - isPasswordRecovery:', isPasswordRecovery, 'user:', user);
+    
+    // Handle redirect after email confirmation
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get('access_token');
+    const type = hashParams.get('type');
+    
+    if (accessToken && type === 'signup') {
+      // Clear the hash from URL
+      window.history.replaceState(null, '', window.location.pathname);
+      // Redirect will happen when user state updates
+    }
+    
     if (user && !isPasswordRecovery) {
       navigate('/');
     }
