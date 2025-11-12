@@ -101,13 +101,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Check if input is username (doesn't contain @)
     if (!emailOrUsername.includes('@')) {
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('email')
         .eq('username', emailOrUsername)
-        .single();
+        .maybeSingle();
 
-      if (!profile || !profile.email) {
+      if (profileError || !profile || !profile.email) {
         toast({
           title: "Login Error",
           description: "Invalid username or password",
