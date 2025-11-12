@@ -11,12 +11,13 @@ import { useAuth } from "@/hooks/useAuth";
 
 const Auth = () => {
   const [loginData, setLoginData] = useState({
-    email: "",
+    emailOrUsername: "",
     password: ""
   });
   
   const [signupData, setSignupData] = useState({
     fullName: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: ""
@@ -41,7 +42,7 @@ const Auth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { error } = await signIn(loginData.email, loginData.password);
+    const { error } = await signIn(loginData.emailOrUsername, loginData.password);
     if (!error) {
       navigate('/');
     }
@@ -53,7 +54,7 @@ const Auth = () => {
       return;
     }
     
-    const { error } = await signUp(signupData.email, signupData.password, signupData.fullName);
+    const { error } = await signUp(signupData.email, signupData.password, signupData.fullName, signupData.username);
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -180,16 +181,16 @@ const Auth = () => {
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
+                    <Label htmlFor="login-email">Email or Username</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="login-email"
-                        type="email"
-                        placeholder="Enter your email"
+                        type="text"
+                        placeholder="Enter your email or username"
                         className="pl-10"
-                        value={loginData.email}
-                        onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
+                        value={loginData.emailOrUsername}
+                        onChange={(e) => setLoginData(prev => ({ ...prev, emailOrUsername: e.target.value }))}
                         required
                       />
                     </div>
@@ -267,6 +268,21 @@ const Auth = () => {
                         className="pl-10"
                         value={signupData.fullName}
                         onChange={(e) => setSignupData(prev => ({ ...prev, fullName: e.target.value }))}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-username">Username</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="signup-username"
+                        placeholder="Choose a username"
+                        className="pl-10"
+                        value={signupData.username}
+                        onChange={(e) => setSignupData(prev => ({ ...prev, username: e.target.value }))}
                         required
                       />
                     </div>
