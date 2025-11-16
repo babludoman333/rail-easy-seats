@@ -49,6 +49,12 @@ const Header = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem asChild>
+                    <Link to="/profile" className="flex items-center space-x-2 w-full">
+                      <User className="h-4 w-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link to="/" className="flex items-center space-x-2 w-full">
                       <Train className="h-4 w-4" />
                       <span>Book Tickets</span>
