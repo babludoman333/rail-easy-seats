@@ -51,11 +51,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUp = async (email: string, password: string, fullName: string, username: string) => {
     // Check if username already exists
-    const { data: existingProfile } = await supabase
+    const { data: existingProfile, error: profileError } = await supabase
       .from('profiles')
       .select('username')
       .eq('username', username)
-      .single();
+      .maybeSingle();
+
+    if (profileError) {
+      toast({
+        title: "Signup Error",
+        description: "Error checking username availability",
+        variant: "destructive"
+      });
+      return { error: { message: "Error checking username availability" } };
+    }
 
     if (existingProfile) {
       toast({
