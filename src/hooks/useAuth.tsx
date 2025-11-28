@@ -6,13 +6,14 @@ import { useToast } from '@/hooks/use-toast';
 interface AuthContextType {
   user: User | null;
   session: Session | null;
-  signUp: (email: string, password: string, fullName: string, username: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, fullName: string, username: string, isDriver?: boolean) => Promise<{ error: any }>;
   signIn: (emailOrUsername: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: any }>;
   updatePassword: (newPassword: string) => Promise<{ error: any }>;
   isPasswordRecovery: boolean;
   loading: boolean;
+  userRole: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,6 +23,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -35,6 +37,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         setSession(session);
         setUser(session?.user ?? null);
+        
+        // Fetch user role when session changes
+        if (session?.user) {
+          setTimeout(() => {
+            fetchUserRole(session.user.id);
+          }, 0);
+        } else {
+          setUserRole(null);
+        }
+        
         setLoading(false);
       }
     );
@@ -43,13 +55,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        fetchUserRole(session.user.id);
+      }
+      
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string, username: string) => {
+  const fetchUserRole = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    if (!error && data) {
+      setUserRole(data.role);
+    }
+  };
+
+  const signUp = async (email: string, password: string, fullName: string, username: string, isDriver: boolean = false) => {
     // Check if username already exists
     const { data: existingProfile, error: profileError } = await supabase
       .from('profiles')
@@ -77,14 +106,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
+    const { data: authData, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: redirectUrl,
         data: {
           full_name: fullName,
-          username: username
+          username: username,
+          is_driver: isDriver
         }
       }
     });
@@ -95,12 +125,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: error.message,
         variant: "destructive"
       });
-    } else {
-      toast({
-        title: "Success",
-        description: "Please check your email to confirm your account",
-      });
+      return { error };
     }
+
+    // If user is immediately available (email confirmation disabled), create role and driver profile
+    if (authData.user) {
+      const role = isDriver ? 'driver' : 'passenger';
+      
+      // Create user role
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .insert({ user_id: authData.user.id, role });
+
+      if (roleError) {
+        console.error('Error creating user role:', roleError);
+      }
+
+      // If driver, create driver profile
+      if (isDriver) {
+        const { error: driverError } = await supabase
+          .from('driver_profiles')
+          .insert({ user_id: authData.user.id });
+
+        if (driverError) {
+          console.error('Error creating driver profile:', driverError);
+        }
+      }
+    }
+
+    toast({
+      title: "Success",
+      description: "Please check your email to confirm your account",
+    });
 
     return { error };
   };
@@ -128,7 +184,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       email = profile.email;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
@@ -139,11 +195,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: error.message,
         variant: "destructive"
       });
-    } else {
+      return { error };
+    }
+
+    // Fetch user role and redirect accordingly
+    if (data.user) {
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', data.user.id)
+        .maybeSingle();
+
+      const role = roleData?.role;
+      
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
+
+      // Redirect based on role
+      setTimeout(() => {
+        if (role === 'driver') {
+          window.location.href = '/driver-dashboard';
+        } else {
+          window.location.href = '/';
+        }
+      }, 100);
     }
 
     return { error };
@@ -211,7 +288,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     resetPassword,
     updatePassword,
     isPasswordRecovery,
-    loading
+    loading,
+    userRole
   };
 
   return (
