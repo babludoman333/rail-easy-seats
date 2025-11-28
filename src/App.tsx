@@ -14,6 +14,7 @@ import MyBookings from "./pages/MyBookings";
 import Contact from "./pages/Contact";
 import PNRStatus from "./pages/PNRStatus";
 import Profile from "./pages/Profile";
+import DriverDashboard from "./pages/DriverDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/pnr-status" element={<PNRStatus />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/driver-dashboard" element={<DriverDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

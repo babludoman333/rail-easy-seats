@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, Train, User, ArrowLeft } from "lucide-react";
+import { Mail, Lock, Train, User, ArrowLeft, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -20,7 +21,8 @@ const Auth = () => {
     username: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    isDriver: false
   });
 
   const [resetEmail, setResetEmail] = useState("");
@@ -55,9 +57,7 @@ const Auth = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const { error } = await signIn(loginData.emailOrUsername, loginData.password);
-    if (!error) {
-      navigate('/');
-    }
+    // Navigation will be handled by useAuth based on user role
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -66,7 +66,7 @@ const Auth = () => {
       return;
     }
     
-    const { error } = await signUp(signupData.email, signupData.password, signupData.fullName, signupData.username);
+    const { error } = await signUp(signupData.email, signupData.password, signupData.fullName, signupData.username, signupData.isDriver);
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -345,6 +345,20 @@ const Auth = () => {
                         onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                         required
                       />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 p-4 bg-muted/50 rounded-lg border border-border">
+                    <Checkbox 
+                      id="driver-signup" 
+                      checked={signupData.isDriver}
+                      onCheckedChange={(checked) => setSignupData(prev => ({ ...prev, isDriver: checked as boolean }))}
+                    />
+                    <div className="flex items-center space-x-2">
+                      <Car className="h-4 w-4 text-primary" />
+                      <Label htmlFor="driver-signup" className="cursor-pointer font-normal">
+                        Sign up as a Driver
+                      </Label>
                     </div>
                   </div>
 
