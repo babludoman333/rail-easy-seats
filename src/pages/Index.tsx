@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import TrainSearchForm from "@/components/search/TrainSearchForm";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { Clock, MapPin, Users, Shield, Zap, Calendar, CreditCard } from "lucide-
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import vandeBharatHero from "@/assets/vande-bharat-hero.jpg";
 import trainsStationBg from "@/assets/trains-station-bg.jpg";
 import trainImage1 from "@/assets/train-image-1.jpg";
@@ -39,11 +41,20 @@ interface Train {
 }
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { userRole, loading } = useAuth();
   const [searchResults, setSearchResults] = useState<Train[]>([]);
   const [isSearched, setIsSearched] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   const rotatingImages = [trainImage1, trainImage2, trainImage3, vandeBharatHero];
+  
+  // Redirect drivers to dashboard
+  useEffect(() => {
+    if (!loading && userRole === 'driver') {
+      navigate('/driver-dashboard');
+    }
+  }, [userRole, loading, navigate]);
   
   useEffect(() => {
     const interval = setInterval(() => {
