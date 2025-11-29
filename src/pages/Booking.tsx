@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, CreditCard, Check, Users, Clock, MapPin } from "lucide-react";
+import { ArrowLeft, CreditCard, Check, Users, Clock, MapPin, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -39,6 +40,22 @@ const Booking = () => {
     phone: "",
     email: user?.email || ""
   });
+
+  // Cab booking state
+  const [bookCab, setBookCab] = useState(false);
+  const [cabData, setCabData] = useState({
+    vehicleType: "",
+    pickupLocation: "",
+    dropLocation: "",
+    price: 0
+  });
+
+  const vehicleTypes = [
+    { type: "Auto/Rickshaw", basePrice: 150 },
+    { type: "Sedan", basePrice: 300 },
+    { type: "SUV", basePrice: 500 },
+    { type: "Bike/Scooter", basePrice: 80 }
+  ];
 
   useEffect(() => {
     if (!user) {
@@ -90,7 +107,7 @@ const Booking = () => {
     return classMap[className] || 'SL';
   };
 
-  const totalAmount = selectedSeats.length * getClassPrice() + 50; // Class-specific fare + booking fee
+  const totalAmount = selectedSeats.length * getClassPrice() + 50 + (bookCab ? cabData.price : 0); // Class-specific fare + booking fee + cab
 
   const handleSeatSelection = (seats: string[]) => {
     setSelectedSeats(seats);
@@ -100,12 +117,28 @@ const Booking = () => {
     setSelectedClass(classType);
   };
 
+  const handleVehicleTypeChange = (type: string) => {
+    const vehicle = vehicleTypes.find(v => v.type === type);
+    if (vehicle) {
+      setCabData(prev => ({ ...prev, vehicleType: type, price: vehicle.basePrice }));
+    }
+  };
+
   const handlePassengerSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedSeats.length === 0) {
       toast({
         title: "No Seats Selected",
         description: "Please select at least one seat",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (bookCab && (!cabData.vehicleType || !cabData.pickupLocation || !cabData.dropLocation)) {
+      toast({
+        title: "Incomplete Cab Details",
+        description: "Please fill all cab booking details",
         variant: "destructive"
       });
       return;
@@ -122,7 +155,8 @@ const Booking = () => {
       journeyDate,
       passenger: passengerData,
       totalAmount,
-      classPrice: getClassPrice()
+      classPrice: getClassPrice(),
+      cabBooking: bookCab ? cabData : null
     };
     
     navigate('/payment', { state: bookingData });
@@ -247,6 +281,72 @@ const Booking = () => {
                         </div>
                       </div>
 
+                      <Separator className="my-6" />
+                      
+                      {/* Cab Booking Section */}
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="bookCab" 
+                            checked={bookCab}
+                            onCheckedChange={(checked) => setBookCab(checked as boolean)}
+                          />
+                          <label htmlFor="bookCab" className="text-sm font-medium flex items-center gap-2">
+                            <Car className="h-4 w-4" />
+                            Book cab for last-mile connectivity
+                          </label>
+                        </div>
+                        
+                        {bookCab && (
+                          <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
+                            <div className="space-y-2">
+                              <Label htmlFor="vehicleType">Vehicle Type</Label>
+                              <Select value={cabData.vehicleType} onValueChange={handleVehicleTypeChange}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select vehicle type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {vehicleTypes.map(vehicle => (
+                                    <SelectItem key={vehicle.type} value={vehicle.type}>
+                                      {vehicle.type} - ₹{vehicle.basePrice}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="pickupLocation">Pickup Location</Label>
+                              <Input
+                                id="pickupLocation"
+                                placeholder="Enter pickup location"
+                                value={cabData.pickupLocation}
+                                onChange={(e) => setCabData(prev => ({ ...prev, pickupLocation: e.target.value }))}
+                                required={bookCab}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="dropLocation">Drop Location</Label>
+                              <Input
+                                id="dropLocation"
+                                placeholder="Enter drop location"
+                                value={cabData.dropLocation}
+                                onChange={(e) => setCabData(prev => ({ ...prev, dropLocation: e.target.value }))}
+                                required={bookCab}
+                              />
+                            </div>
+                            
+                            {cabData.price > 0 && (
+                              <div className="flex justify-between items-center p-3 bg-background rounded-md">
+                                <span className="font-medium">Cab Fare:</span>
+                                <span className="text-lg font-bold text-primary">₹{cabData.price}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
                       <Button type="submit" className="w-full">
                         Review Booking
                       </Button>
@@ -292,6 +392,36 @@ const Booking = () => {
                         </div>
                       </div>
                     </div>
+
+                    {bookCab && cabData.vehicleType && (
+                      <>
+                        <Separator />
+                        <div className="space-y-4">
+                          <h3 className="font-semibold flex items-center gap-2">
+                            <Car className="h-4 w-4" />
+                            Cab Booking Details
+                          </h3>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <span className="text-sm text-muted-foreground">Vehicle Type:</span>
+                              <div className="font-medium">{cabData.vehicleType}</div>
+                            </div>
+                            <div>
+                              <span className="text-sm text-muted-foreground">Fare:</span>
+                              <div className="font-medium">₹{cabData.price}</div>
+                            </div>
+                            <div>
+                              <span className="text-sm text-muted-foreground">Pickup:</span>
+                              <div className="font-medium">{cabData.pickupLocation}</div>
+                            </div>
+                            <div>
+                              <span className="text-sm text-muted-foreground">Drop:</span>
+                              <div className="font-medium">{cabData.dropLocation}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
                     <Button onClick={handleConfirmBooking} className="w-full">
                       Proceed to Payment - ₹{totalAmount.toLocaleString()}
@@ -368,6 +498,12 @@ const Booking = () => {
                           <span>Booking Fee:</span>
                           <span>₹50</span>
                         </div>
+                        {bookCab && cabData.price > 0 && (
+                          <div className="flex justify-between">
+                            <span>Cab Fare:</span>
+                            <span>₹{cabData.price}</span>
+                          </div>
+                        )}
                         <div className="flex justify-between font-bold text-lg">
                           <span>Total:</span>
                           <span>₹{totalAmount.toLocaleString()}</span>
