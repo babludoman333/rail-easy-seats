@@ -76,6 +76,48 @@ export type Database = {
           },
         ]
       }
+      cab_bookings: {
+        Row: {
+          booking_id: string
+          created_at: string
+          driver_id: string | null
+          drop_location: string
+          id: string
+          pickup_location: string
+          price: number
+          status: string
+          updated_at: string
+          user_id: string
+          vehicle_type: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          driver_id?: string | null
+          drop_location: string
+          id?: string
+          pickup_location: string
+          price: number
+          status?: string
+          updated_at?: string
+          user_id: string
+          vehicle_type: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          driver_id?: string | null
+          drop_location?: string
+          id?: string
+          pickup_location?: string
+          price?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+          vehicle_type?: string
+        }
+        Relationships: []
+      }
       driver_profiles: {
         Row: {
           created_at: string | null

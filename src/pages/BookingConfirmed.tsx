@@ -1,6 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
-import { CheckCircle, Download, Home, Calendar, MapPin, Users } from "lucide-react";
+import { CheckCircle, Download, Home, Calendar, MapPin, Users, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -68,6 +68,25 @@ const BookingConfirmed = () => {
         });
       } else {
         console.log('Booking saved successfully');
+      }
+
+      // Save cab booking if exists
+      if (bookingData.cabBooking) {
+        const { error: cabError } = await supabase
+          .from('cab_bookings')
+          .insert({
+            booking_id: bookingData.bookingId,
+            user_id: user.id,
+            vehicle_type: bookingData.cabBooking.vehicleType,
+            pickup_location: bookingData.cabBooking.pickupLocation,
+            drop_location: bookingData.cabBooking.dropLocation,
+            price: bookingData.cabBooking.price,
+            status: 'pending'
+          });
+
+        if (cabError) {
+          console.error('Error saving cab booking:', cabError);
+        }
       }
     } catch (error) {
       console.error('Error saving booking:', error);
@@ -396,6 +415,42 @@ const BookingConfirmed = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Cab Booking Details */}
+        {bookingData.cabBooking && (
+          <Card className="mb-8 animate-fade-in">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Car className="h-5 w-5" />
+                Cab Booking Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Vehicle Type:</span>
+                <span className="font-medium">{bookingData.cabBooking.vehicleType}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Pickup Location:</span>
+                <span className="font-medium">{bookingData.cabBooking.pickupLocation}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Drop Location:</span>
+                <span className="font-medium">{bookingData.cabBooking.dropLocation}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Status:</span>
+                <Badge variant="outline" className="bg-yellow-100">Pending Driver Assignment</Badge>
+              </div>
+              <div className="border-t pt-4">
+                <div className="flex justify-between text-lg font-bold">
+                  <span>Cab Fare:</span>
+                  <span className="text-primary">₹{bookingData.cabBooking.price.toLocaleString()}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
