@@ -93,7 +93,7 @@ const Contact = () => {
                 <p className="text-sm text-muted-foreground mb-2">
                   Send us a detailed message
                 </p>
-                <p className="font-medium">support@railease.com</p>
+                <p className="font-medium">support@nxtjourney.com</p>
                 <p className="text-sm text-muted-foreground">
                   We'll respond within 24 hours
                 </p>

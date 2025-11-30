@@ -147,7 +147,7 @@ const BookingConfirmed = () => {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(28);
     doc.setTextColor(255, 255, 255);
-    doc.text('RailEase', 20, 25);
+    doc.text('Nxt Journey', 20, 25);
     
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(12);
@@ -295,10 +295,10 @@ const BookingConfirmed = () => {
     
     doc.setFontSize(8);
     doc.setTextColor(255, 255, 255);
-    doc.text('RailEase - Your Trusted Travel Partner', 20, 294);
+    doc.text('Nxt Journey - Your Trusted Travel Partner', 20, 294);
     doc.text(`Generated: ${new Date().toLocaleString('en-IN')}`, 130, 294);
     
-    doc.save(`RailEase-Ticket-${booking.bookingId}.pdf`);
+    doc.save(`NxtJourney-Ticket-${booking.bookingId}.pdf`);
     
     toast({
       title: "Success",

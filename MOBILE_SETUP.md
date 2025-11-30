@@ -1,7 +1,7 @@
-# RailEase Mobile App Setup
+# Nxt Journey Mobile App Setup
 
 ## Overview
-RailEase is ready for mobile deployment using Capacitor. The app can be built as native Android and iOS applications.
+Nxt Journey is ready for mobile deployment using Capacitor. The app can be built as native Android and iOS applications.
 
 ## Prerequisites
 - Node.js and npm installed

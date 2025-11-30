@@ -96,7 +96,7 @@ export function ChatSupport() {
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
               )}
-              <h3 className="font-semibold">RailEase Support</h3>
+              <h3 className="font-semibold">Nxt Journey Support</h3>
             </div>
             <Button
               onClick={() => setIsOpen(false)}
