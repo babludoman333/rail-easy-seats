@@ -21,7 +21,7 @@ const Header = () => {
             <div className="p-2 bg-gradient-to-r from-primary to-primary/80 rounded-lg">
               <Train className="h-6 w-6 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-primary">RailEase</span>
+            <span className="text-2xl font-bold text-primary">nxt journey</span>
           </Link>
 
           {/* Navigation - center buttons */}
