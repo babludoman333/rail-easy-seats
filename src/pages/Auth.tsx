@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, User, ArrowLeft, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import nxtJourneyLogo from "@/assets/nxt-journey-logo.png";
+import trainLogo from "@/assets/train-logo-clean.png";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -98,7 +98,7 @@ const Auth = () => {
         <div className="w-full max-w-md">
           <div className="flex justify-center mb-8">
             <Link to="/" className="flex items-center space-x-3">
-              <img src={nxtJourneyLogo} alt="Nxt Journey" className="h-16 w-auto" />
+              <img src={trainLogo} alt="Nxt Journey" className="h-16 w-auto" />
             </Link>
           </div>
 
@@ -167,7 +167,7 @@ const Auth = () => {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <Link to="/" className="flex items-center space-x-3">
-            <img src={nxtJourneyLogo} alt="Nxt Journey" className="h-16 w-auto" />
+            <img src={trainLogo} alt="Nxt Journey" className="h-16 w-auto" />
           </Link>
         </div>
 
