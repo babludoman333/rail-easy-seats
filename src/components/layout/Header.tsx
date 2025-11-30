@@ -2,7 +2,7 @@ import { User, Menu, LogOut, ChevronDown, Train } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import nxtJourneyLogo from "@/assets/nxt-journey-logo.png";
+import trainLogo from "@/assets/train-logo-clean.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +19,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src={nxtJourneyLogo} alt="Nxt Journey" className="h-10 w-auto" />
+            <img src={trainLogo} alt="Nxt Journey" className="h-10 w-auto" />
           </Link>
 
           {/* Navigation - center buttons */}
