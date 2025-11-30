@@ -1,7 +1,8 @@
-import { Train, User, Menu, LogOut, ChevronDown } from "lucide-react";
+import { User, Menu, LogOut, ChevronDown, Train } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import nxtJourneyLogo from "@/assets/nxt-journey-logo.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,10 +19,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="p-2 bg-gradient-to-r from-primary to-primary/80 rounded-lg">
-              <Train className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <span className="text-2xl font-bold text-primary">RailEase</span>
+            <img src={nxtJourneyLogo} alt="Nxt Journey" className="h-10 w-auto" />
           </Link>
 
           {/* Navigation - center buttons */}

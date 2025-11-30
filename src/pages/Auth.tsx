@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, Train, User, ArrowLeft, Car } from "lucide-react";
+import { Mail, Lock, User, ArrowLeft, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import nxtJourneyLogo from "@/assets/nxt-journey-logo.png";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -96,11 +97,8 @@ const Auth = () => {
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="w-full max-w-md">
           <div className="flex justify-center mb-8">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="p-3 bg-gradient-to-r from-primary to-primary/80 rounded-lg">
-                <Train className="h-8 w-8 text-primary-foreground" />
-              </div>
-              <span className="text-3xl font-bold text-primary">RailEase</span>
+            <Link to="/" className="flex items-center space-x-3">
+              <img src={nxtJourneyLogo} alt="Nxt Journey" className="h-16 w-auto" />
             </Link>
           </div>
 
@@ -168,17 +166,14 @@ const Auth = () => {
         </div>
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="p-3 bg-gradient-to-r from-primary to-primary/80 rounded-lg">
-              <Train className="h-8 w-8 text-primary-foreground" />
-            </div>
-            <span className="text-3xl font-bold text-primary">RailEase</span>
+          <Link to="/" className="flex items-center space-x-3">
+            <img src={nxtJourneyLogo} alt="Nxt Journey" className="h-16 w-auto" />
           </Link>
         </div>
 
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Welcome to RailEase</CardTitle>
+            <CardTitle className="text-2xl">Welcome to Nxt Journey</CardTitle>
             <CardDescription>
               Sign in to your account or create a new one
             </CardDescription>
